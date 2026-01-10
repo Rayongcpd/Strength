@@ -303,6 +303,16 @@ function renderTable() {
     const tbody = document.getElementById('table-body');
     tbody.innerHTML = '';
 
+    // Toggle Header Visibility
+    const thCode = document.getElementById('th-code');
+    if (thCode) {
+        if (isAdmin) {
+            thCode.classList.remove('hidden');
+        } else {
+            thCode.classList.add('hidden');
+        }
+    }
+
     displayData.forEach((d, index) => {
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-gray-50 transition border-b';
@@ -329,9 +339,15 @@ function renderTable() {
             `;
         }
 
+        // Conditionally render Code Cell
+        let codeCell = '';
+        if (isAdmin) {
+            codeCell = `<td class="px-4 py-3 text-gray-500">${d.code}</td>`;
+        }
+
         tr.innerHTML = `
             <td class="px-4 py-3 font-medium text-gray-900">${index + 1}</td>
-            <td class="px-4 py-3 text-gray-500">${d.code}</td>
+            ${codeCell}
             <td class="px-4 py-3 font-semibold text-primary">${d.name}</td>
             <td class="px-4 py-3 text-gray-500 text-xs">${d.agency}</td>
             <td class="px-4 py-3 text-gray-500 text-xs">${d.type}</td>
@@ -430,7 +446,14 @@ function viewDetails(id) {
     if (!item) return;
 
     document.getElementById('detail-title').innerText = item.name;
-    document.getElementById('detail-subtitle').innerHTML = `รหัส: ${item.code} | สังกัด: ${item.agency} | คะแนนรวม: ${item.total.toFixed(2)} (${item.grade}) <span id="detail-modal-id" data-id="${item.id}" class="hidden"></span>`;
+
+    let subtitle = `สังกัด: ${item.agency} | คะแนนรวม: ${item.total.toFixed(2)} (${item.grade})`;
+    if (isAdmin) {
+        subtitle = `รหัส: ${item.code} | ` + subtitle;
+    }
+    subtitle += ` <span id="detail-modal-id" data-id="${item.id}" class="hidden"></span>`;
+
+    document.getElementById('detail-subtitle').innerHTML = subtitle;
 
     const v = item.fullRow;
     // Map values similarly to editData
