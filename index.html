@@ -60,7 +60,8 @@
         <header class="bg-gradient-to-r from-primary to-purple text-white p-4 shadow-lg shrink-0">
             <div class="container mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <span class="text-3xl">🏛️</span>
+                    <span class="text-3xl cursor-pointer select-none" id="secret-login-trigger"
+                        title="ระบบรายงานความเข้มแข็ง">🏛️</span>
                     <div>
                         <h1 class="text-2xl font-bold">ระบบรายงานความเข้มแข็งของสหกรณ์</h1>
                         <p class="text-sm opacity-90">ประจำปีงบประมาณ 2568</p>
@@ -68,7 +69,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <button id="admin-btn" onclick="adminLogin()"
-                        class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition"
+                        class="hidden bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition"
                         title="สำหรับผู้ดูแลระบบ">
                         🔒
                     </button>
