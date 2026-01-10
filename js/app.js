@@ -105,14 +105,8 @@ function adminLogout() {
 }
 
 function updateAdminState() {
-    // Toggle Header Button
-    if (isAdmin) {
-        document.getElementById('admin-btn').classList.add('hidden');
-        document.getElementById('admin-logout-btn').classList.remove('hidden');
-    } else {
-        document.getElementById('admin-btn').classList.remove('hidden');
-        document.getElementById('admin-logout-btn').classList.add('hidden');
-    }
+    // Toggle Admin Button is now handled by Secret Trigger (Hidden by default)
+    // if (!isAdmin) { ... } -> We keep it hidden.
 
     // Toggle Add/Import Buttons
     const btnContainer = document.querySelector('.flex.gap-2'); // Buttons container
@@ -135,7 +129,29 @@ window.onload = function () {
     fetchData();
     setupLiveCalc();
     updateAdminState(); // Init restricted state
+    setupSecretTrigger();
 };
+
+function setupSecretTrigger() {
+    let clicks = 0;
+    let timer = null;
+    const trigger = document.getElementById('secret-login-trigger');
+
+    if (trigger) {
+        trigger.addEventListener('click', () => {
+            clicks++;
+            if (clicks === 1) {
+                timer = setTimeout(() => {
+                    clicks = 0;
+                }, 1000); // Reset after 1 second
+            } else if (clicks === 3) {
+                clearTimeout(timer);
+                clicks = 0;
+                if (!isAdmin) adminLogin();
+            }
+        });
+    }
+}
 
 
 function showLoader(show) {
@@ -654,6 +670,20 @@ function handleFormSubmit(e) {
                 } else {
                     // Add: Push to list (and maybe re-sort later? for now just push)
                     dataList.push(newItem);
+                }
+
+
+                // Toggle Add buttons specific logic
+                const addBtn = document.querySelector('button[onclick="openModal()"]');
+                const importBtn = document.querySelector('button[onclick*="excel-file"]');
+                if (addBtn) addBtn.style.display = isAdmin ? 'flex' : 'none';
+                if (importBtn) importBtn.style.display = isAdmin ? 'flex' : 'none';
+
+                // Show Logout if admin
+                if (isAdmin) {
+                    document.getElementById('admin-logout-btn').classList.remove('hidden');
+                } else {
+                    document.getElementById('admin-logout-btn').classList.add('hidden');
                 }
 
                 renderTable(); // Instant render
