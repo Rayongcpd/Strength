@@ -108,6 +108,16 @@ function updateAdminState() {
     // Toggle Admin Button is now handled by Secret Trigger (Hidden by default)
     // if (!isAdmin) { ... } -> We keep it hidden.
 
+    // Show Logout if admin
+    const logoutBtn = document.getElementById('admin-logout-btn');
+    if (logoutBtn) {
+        if (isAdmin) {
+            logoutBtn.classList.remove('hidden');
+        } else {
+            logoutBtn.classList.add('hidden');
+        }
+    }
+
     // Toggle Add/Import Buttons
     const btnContainer = document.querySelector('.flex.gap-2'); // Buttons container
     if (btnContainer) {
