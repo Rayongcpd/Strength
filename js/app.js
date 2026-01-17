@@ -6,6 +6,7 @@ let chartTrendInstance = null;
 let importRawData = []; // Store Excel data here
 let isAdmin = false;
 let currentIndicatorConfig = null; // Will load from server
+let isDarkMode = false; // State for dark mode
 
 // Initialize with default placeholders for Cooperatives (สหกรณ์)
 let INDICATOR_INFO = {
@@ -140,7 +141,41 @@ window.onload = function () {
     setupLiveCalc();
     updateAdminState(); // Init restricted state
     setupSecretTrigger();
+    initDarkMode(); // Init Theme
 };
+
+// --- Dark Mode Logic ---
+function initDarkMode() {
+    // Check local storage or system preference
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        isDarkMode = true;
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-icon').innerText = '☀️';
+    } else {
+        isDarkMode = false;
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-icon').innerText = '🌙';
+    }
+}
+
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('theme-icon').innerText = '☀️';
+    } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('theme-icon').innerText = '🌙';
+    }
+    // Re-render charts to update text colors
+    if (chartClassInstance || chartTrendInstance) {
+        // Simple re-render if data exists
+        renderTable();
+    }
+}
 
 function setupSecretTrigger() {
     let clicks = 0;
@@ -315,7 +350,7 @@ function renderTable() {
 
     displayData.forEach((d, index) => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-gray-50 transition border-b';
+        tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition border-b dark:border-gray-700';
 
         // Color badge for grade (normalize for both "ชั้น 1" and "ชั้น1")
         let gradeBadge = 'bg-gray-200 text-gray-800';
@@ -324,12 +359,12 @@ function renderTable() {
         if (d.grade && d.grade.includes('3')) gradeBadge = 'bg-danger text-white';
 
         // Trend Icon (🟢 ดีขึ้น, 🟡 คงเดิม, 🔴 แย่ลง)
-        let trendIcon = '🟡 <span class="text-yellow-600 text-xs">คงเดิม</span>';
-        if (d.trend === 'ดีขึ้น') trendIcon = '🟢 <span class="text-green-600 text-xs">ดีขึ้น</span>';
-        if (d.trend === 'แย่ลง') trendIcon = '🔴 <span class="text-red-600 text-xs">แย่ลง</span>';
+        let trendIcon = '🟡 <span class="text-yellow-600 dark:text-yellow-400 text-xs">คงเดิม</span>';
+        if (d.trend === 'ดีขึ้น') trendIcon = '🟢 <span class="text-green-600 dark:text-green-400 text-xs">ดีขึ้น</span>';
+        if (d.trend === 'แย่ลง') trendIcon = '🔴 <span class="text-red-600 dark:text-red-400 text-xs">แย่ลง</span>';
 
         let actionHtml = `
-             <button onclick="viewDetails(${d.id})" class="text-gray-600 hover:bg-gray-100 p-1 rounded" title="ดูรายละเอียด">📄</button>
+             <button onclick="viewDetails(${d.id})" class="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 p-1 rounded" title="ดูรายละเอียด">📄</button>
         `;
 
         if (isAdmin) {
@@ -346,12 +381,12 @@ function renderTable() {
         }
 
         tr.innerHTML = `
-            <td class="px-4 py-3 font-medium text-gray-900">${index + 1}</td>
+            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${index + 1}</td>
             ${codeCell}
-            <td class="px-4 py-3 font-semibold text-primary">${d.name}</td>
-            <td class="px-4 py-3 text-gray-500 text-xs">${d.agency}</td>
-            <td class="px-4 py-3 text-gray-500 text-xs">${d.type}</td>
-            <td class="px-4 py-3 text-center font-bold">${d.total.toFixed(2)}</td>
+            <td class="px-4 py-3 font-semibold text-primary dark:text-primary-400">${d.name}</td>
+            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">${d.agency}</td>
+            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">${d.type}</td>
+            <td class="px-4 py-3 text-center font-bold dark:text-gray-200">${d.total.toFixed(2)}</td>
             <td class="px-4 py-3 text-center"><span class="px-2 py-1 rounded-full text-xs font-bold ${gradeBadge}">${d.grade}</span></td>
             <td class="px-4 py-3 text-center">${trendIcon}</td>
             <td class="px-4 py-3 text-center flex justify-center gap-2">
@@ -394,16 +429,29 @@ function updateCharts(data) {
 
     const ctxClass = document.getElementById('chartClass').getContext('2d');
     if (chartClassInstance) chartClassInstance.destroy();
+
+    // Determine Text Color
+    const textColor = isDarkMode ? '#e5e7eb' : '#374151';
+
     chartClassInstance = new Chart(ctxClass, {
         type: 'doughnut',
         data: {
             labels: ['ชั้น 1', 'ชั้น 2', 'ชั้น 3'],
             datasets: [{
                 data: [counts['ชั้น 1'], counts['ชั้น 2'], counts['ชั้น 3']],
-                backgroundColor: ['#AED581', '#FFCA28', '#EF5350']
+                backgroundColor: ['#AED581', '#FFCA28', '#EF5350'],
+                borderColor: isDarkMode ? '#1f2937' : '#ffffff'
             }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor }
+                }
+            }
+        }
     });
 
     // Trend Chart
@@ -423,7 +471,26 @@ function updateCharts(data) {
                 borderRadius: 5
             }]
         },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: textColor },
+                    grid: { color: isDarkMode ? '#374151' : '#e5e7eb' }
+                },
+                x: {
+                    ticks: { color: textColor },
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: textColor }
+                }
+            }
+        }
     });
 }
 
@@ -478,8 +545,8 @@ function viewDetails(id) {
     for (let dim = 1; dim <= 4; dim++) {
         const container = document.getElementById(`tab-content-${dim}`);
         let html = `
-            <table class="w-full text-sm text-left text-gray-500 border-separate border-spacing-y-2">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-separate border-spacing-y-2">
+                <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-gray-700">
                     <tr>
                         <th class="px-2 py-2 w-24 text-center">ตัวชี้วัด</th>
                         <th class="px-2 py-2">คำอธิบาย</th>
@@ -501,7 +568,7 @@ function viewDetails(id) {
 
             if (isAdmin) {
                 // Global Desc (Admin) - Still updates global
-                descDisplay = `<input type="text" class="border rounded p-1 w-full text-xs bg-yellow-50 focus:bg-white" 
+                descDisplay = `<input type="text" class="border rounded p-1 w-full text-xs bg-yellow-50 focus:bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:bg-gray-700" 
                     value="${info.desc}" onchange="updateIndicatorField('${d.key}', 'desc', this.value)">`;
 
                 // Local Advice (Admin) - Updates local coop advice
@@ -513,20 +580,20 @@ function viewDetails(id) {
             } else {
                 // Read Only Advice
                 if (coopAdvice) {
-                    adviceInput = `<div class="mt-2 p-2 bg-gray-50 rounded text-xs text-gray-600 border border-gray-100">
-                        <strong class="text-primary">💡 คำแนะนำ:</strong> ${coopAdvice}
+                    adviceInput = `<div class="mt-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-xs text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-600">
+                        <strong class="text-primary dark:text-primary-400">💡 คำแนะนำ:</strong> ${coopAdvice}
                      </div>`;
                 }
             }
 
             html += `
-                <tr class="bg-white border-b hover:bg-gray-50 align-top">
-                    <td class="px-2 py-3 font-bold text-gray-900 text-center align-top">${info.code}</td>
+                <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 align-top">
+                    <td class="px-2 py-3 font-bold text-gray-900 dark:text-white text-center align-top">${info.code}</td>
                     <td class="px-2 py-3 text-wrap pr-2">
                         <div>${descDisplay}</div>
                         ${adviceInput}
                     </td>
-                    <td class="px-2 py-3 text-right font-medium align-top ${val > 0 ? 'text-primary' : 'text-gray-400'}">${val.toFixed(2)}</td>
+                    <td class="px-2 py-3 text-right font-medium align-top ${val > 0 ? 'text-primary dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}">${val.toFixed(2)}</td>
                 </tr>
             `;
         });
@@ -541,12 +608,12 @@ function viewDetails(id) {
         sum = parseFloat(sum) || 0;
 
         html += `
-                <tr class="bg-gray-100 font-bold">
+                <tr class="bg-gray-100 dark:bg-gray-700 font-bold">
                     <td class="px-4 py-2" colspan="2">รวมมิติที่ ${dim}</td>
-                    <td class="px-4 py-2 text-right text-gray-900">${sum.toFixed(2)}</td>
+                    <td class="px-4 py-2 text-right text-gray-900 dark:text-white">${sum.toFixed(2)}</td>
                 </tr>
             </tbody>
-        </table>`;
+        </table > `;
 
         container.innerHTML = html;
     }
@@ -555,10 +622,10 @@ function viewDetails(id) {
     const failText = v[21];
     if (failText) {
         document.getElementById('tab-content-3').innerHTML += `
-            <div class="mt-4 p-3 bg-red-50 text-red-700 rounded border border-red-200">
+            < div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded border border-red-200 dark:border-red-900" >
                 <span class="font-bold">⚠️ หมายเหตุ (ภาพรวมไม่เข้าเกณฑ์):</span> ${failText}
-            </div>
-        `;
+            </div >
+            `;
     }
 
     // Reset Tabs to 1
@@ -566,14 +633,14 @@ function viewDetails(id) {
     const modalFooter = document.querySelector('#detailModal .bg-gray-50.flex.justify-end');
     if (isAdmin) {
         modalFooter.innerHTML = `
-            <div class="mr-auto flex gap-2">
+            < div class="mr-auto flex gap-2" >
                  <button type="button" onclick="saveIndicatorConfig()" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-white font-medium hover:bg-yellow-600 focus:outline-none sm:text-sm">💾 บันทึกคำอธิบาย (ทั้งหมด)</button>
                  <button type="button" onclick="saveLocalAdvice()" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none sm:text-sm">📨 บันทึกคำแนะนำ (เฉพาะราย)</button>
-            </div>
+            </div >
             <button type="button" onclick="closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:w-auto sm:text-sm">ปิด</button>
         `;
     } else {
-        if (modalFooter) modalFooter.innerHTML = `<button type="button" onclick="closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">ปิด</button>`;
+        if (modalFooter) modalFooter.innerHTML = `< button type = "button" onclick = "closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm" > ปิด</button > `;
     }
 
     switchTab(1);
@@ -593,8 +660,8 @@ function switchTab(dim) {
     });
 
     // Show current
-    document.getElementById(`tab-content-${dim}`).classList.remove('hidden');
-    const btn = document.getElementById(`tab-${dim}`);
+    document.getElementById(`tab - content - ${dim} `).classList.remove('hidden');
+    const btn = document.getElementById(`tab - ${dim} `);
     btn.classList.remove('border-transparent', 'text-gray-500');
     btn.classList.add('border-primary', 'text-primary');
 }
@@ -824,24 +891,24 @@ function renderImportPreview() {
     // Show first 5 rows for preview
     previewData.slice(0, 5).forEach((row, idx) => {
         const tr = document.createElement('tr');
-        tr.className = 'border-b hover:bg-gray-50';
+        tr.className = 'border-b hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600';
 
         // Helper safely get value
         const v = (i) => row[i] !== undefined ? row[i] : '';
 
         tr.innerHTML = `
-            <td class="px-2 py-1 bg-gray-50 text-gray-400 text-xs text-center">${startRow + idx}</td>
-            <td class="px-2 py-1">${v(1)}</td>
-            <td class="px-2 py-1 text-primary font-medium">${v(2)}</td>
-            <td class="px-2 py-1">${v(3)}</td>
-            <td class="px-2 py-1">${v(4)}</td>
+            <td class="px-2 py-1 bg-gray-50 dark:bg-gray-700 text-gray-400 dark:text-gray-300 text-xs text-center">${startRow + idx}</td>
+            <td class="px-2 py-1 dark:text-gray-300">${v(1)}</td>
+            <td class="px-2 py-1 text-primary dark:text-primary-400 font-medium">${v(2)}</td>
+            <td class="px-2 py-1 dark:text-gray-300">${v(3)}</td>
+            <td class="px-2 py-1 dark:text-gray-300">${v(4)}</td>
         `;
         tbody.appendChild(tr);
     });
 
     if (previewData.length > 5) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="5" class="text-center py-2 text-gray-400 italic">... และอีก ${previewData.length - 5} รายการ ...</td>`;
+        tr.innerHTML = `<td colspan="5" class="text-center py-2 text-gray-400 dark:text-gray-500 italic">... และอีก ${previewData.length - 5} รายการ ...</td>`;
         tbody.appendChild(tr);
     }
 }
