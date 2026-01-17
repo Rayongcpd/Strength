@@ -622,9 +622,9 @@ function viewDetails(id) {
     const failText = v[21];
     if (failText) {
         document.getElementById('tab-content-3').innerHTML += `
-            < div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded border border-red-200 dark:border-red-900" >
+            <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded border border-red-200 dark:border-red-900">
                 <span class="font-bold">⚠️ หมายเหตุ (ภาพรวมไม่เข้าเกณฑ์):</span> ${failText}
-            </div >
+            </div>
             `;
     }
 
@@ -633,14 +633,14 @@ function viewDetails(id) {
     const modalFooter = document.querySelector('#detailModal .bg-gray-50.flex.justify-end');
     if (isAdmin) {
         modalFooter.innerHTML = `
-            < div class="mr-auto flex gap-2" >
+            <div class="mr-auto flex gap-2">
                  <button type="button" onclick="saveIndicatorConfig()" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-white font-medium hover:bg-yellow-600 focus:outline-none sm:text-sm">💾 บันทึกคำอธิบาย (ทั้งหมด)</button>
                  <button type="button" onclick="saveLocalAdvice()" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none sm:text-sm">📨 บันทึกคำแนะนำ (เฉพาะราย)</button>
-            </div >
+            </div>
             <button type="button" onclick="closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:w-auto sm:text-sm">ปิด</button>
         `;
     } else {
-        if (modalFooter) modalFooter.innerHTML = `< button type = "button" onclick = "closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm" > ปิด</button > `;
+        if (modalFooter) modalFooter.innerHTML = `<button type="button" onclick="closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">ปิด</button>`;
     }
 
     switchTab(1);
@@ -660,8 +660,9 @@ function switchTab(dim) {
     });
 
     // Show current
-    document.getElementById(`tab - content - ${dim} `).classList.remove('hidden');
-    const btn = document.getElementById(`tab - ${dim} `);
+    // Show current
+    document.getElementById(`tab-content-${dim}`).classList.remove('hidden');
+    const btn = document.getElementById(`tab-${dim}`);
     btn.classList.remove('border-transparent', 'text-gray-500');
     btn.classList.add('border-primary', 'text-primary');
 }
