@@ -149,7 +149,6 @@ window.onload = function () {
     updateAdminState(); // Init restricted state
     setupSecretTrigger();
     initDarkMode(); // Init Theme
-    loadAllCriteriaData(); // Load criteria for info buttons
 };
 
 // --- Dark Mode Logic ---
@@ -261,6 +260,9 @@ function onDataSuccess(response) {
     renderTable();
     renderDashboard();
     showLoader(false);
+
+    // Load criteria in background after main data is shown
+    loadAllCriteriaData();
 }
 
 function onDataError(err) {
