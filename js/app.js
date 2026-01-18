@@ -1140,20 +1140,34 @@ function viewIndicatorCriteria(code, type) {
 
     // Get criteria content
     const criteriaData = currentCriteriaType === 'farmer_group' ? criteriaDataFG : criteriaDataCoop;
+
+    // Check if criteria data is fully loaded
+    const isLoaded = Object.keys(criteriaData).length > 0;
     const html = criteriaData[code] || '';
 
-    console.log('Viewing Criteria:', { code: code, type: type, found: !!html, criteriaKeys: Object.keys(criteriaData) });
+    console.log('Viewing Criteria:', { code: code, type: type, found: !!html, isLoaded: isLoaded });
 
     const contentDiv = document.getElementById('criteria-content');
 
-    if (html && html.trim()) {
-        contentDiv.innerHTML = html;
-        // Trigger MathJax to render formulas
-        if (window.MathJax && MathJax.typesetPromise) {
-            MathJax.typesetPromise([contentDiv]).catch((err) => console.error('MathJax error:', err));
+    if (isLoaded) {
+        if (html && html.trim()) {
+            contentDiv.innerHTML = html;
+            // Trigger MathJax to render formulas
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([contentDiv]).catch((err) => console.error('MathJax error:', err));
+            }
+        } else {
+            contentDiv.innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic text-center py-8">ยังไม่มีข้อมูลเกณฑ์สำหรับตัวชี้วัดนี้</p>';
         }
     } else {
-        contentDiv.innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic text-center py-8">ยังไม่มีข้อมูลเกณฑ์สำหรับตัวชี้วัดนี้</p>';
+        // Show Loading State
+        contentDiv.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-8 text-blue-600 dark:text-blue-400">
+                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                <p>กำลังโหลดข้อมูลเกณฑ์ล่าสุด...</p>
+                <p class="text-sm text-gray-400 mt-1">กรุณารอสักครู่แล้วเปิดใหม่อีกครั้ง</p>
+            </div>
+        `;
     }
 
     // Show/hide edit button based on admin status
