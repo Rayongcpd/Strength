@@ -1191,31 +1191,27 @@ function openCriteriaEditor() {
     const criteriaData = type === 'farmer_group' ? criteriaDataFG : criteriaDataCoop;
     const html = criteriaData[code] || '';
 
-    // Clear the editor container
-    const container = document.getElementById('criteria-editor-container');
-    container.innerHTML = '';
-
-    // Initialize Quill
-    quillEditor = new Quill('#criteria-editor-container', {
-        theme: 'snow',
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                [{ 'align': [] }],
-                ['link', 'image'],
-                ['clean']
-            ]
-        },
-        placeholder: 'พิมพ์รายละเอียดเกณฑ์ที่นี่...'
-    });
-
-    // Set initial content
-    if (html) {
-        quillEditor.root.innerHTML = html;
+    // Initialize Quill if NOT exists
+    if (!quillEditor) {
+        quillEditor = new Quill('#criteria-editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'พิมพ์รายละเอียดเกณฑ์ที่นี่...'
+        });
     }
+
+    // Set content (Always overwrite with current data)
+    quillEditor.root.innerHTML = html || '';
 
     // Show editor modal
     document.getElementById('criteriaEditorModal').classList.remove('hidden');
@@ -1225,8 +1221,7 @@ function openCriteriaEditor() {
  * Close Criteria Editor
  */
 function closeCriteriaEditor() {
-    quillEditor = null;
-    document.getElementById('criteria-editor-container').innerHTML = '';
+    // Just hide the modal, keep the editor instance alive
     document.getElementById('criteriaEditorModal').classList.add('hidden');
 }
 
