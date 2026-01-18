@@ -161,3 +161,51 @@ html.dark .criteria-content tr:hover {
 .text-info {
     color: #0288D1;
 }
+
+/* Quill Editor Dark Mode Overrides */
+html.dark .ql-toolbar {
+    background-color: #374151;
+    /* gray-700 */
+    border-color: #4b5563 !important;
+    /* gray-600 */
+}
+
+html.dark .ql-container {
+    background-color: #1f2937;
+    /* gray-800 */
+    border-color: #4b5563 !important;
+    /* gray-600 */
+    color: #e5e7eb;
+    /* gray-200 */
+}
+
+/* Toolbar Icons */
+html.dark .ql-stroke {
+    stroke: #e5e7eb !important;
+}
+
+html.dark .ql-fill {
+    fill: #e5e7eb !important;
+}
+
+html.dark .ql-picker {
+    color: #e5e7eb !important;
+}
+
+html.dark .ql-picker-options {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+}
+
+/* Fix for snow theme specific icon parts */
+html.dark .ql-snow .ql-stroke {
+    stroke: #e5e7eb;
+}
+
+html.dark .ql-snow .ql-fill {
+    fill: #e5e7eb;
+}
+
+html.dark .ql-snow .ql-picker {
+    color: #e5e7eb;
+}
