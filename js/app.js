@@ -1108,6 +1108,7 @@ function saveLocalAdvice() {
 function fetchCriteriaData(type, callback) {
     google.script.run
         .withSuccessHandler((res) => {
+            console.log('Criteria Fetch Result (' + type + '):', res);
             if (type === 'farmer_group') {
                 criteriaDataFG = res.criteria || {};
             } else {
@@ -1140,6 +1141,8 @@ function viewIndicatorCriteria(code, type) {
     // Get criteria content
     const criteriaData = currentCriteriaType === 'farmer_group' ? criteriaDataFG : criteriaDataCoop;
     const html = criteriaData[code] || '';
+
+    console.log('Viewing Criteria:', { code: code, type: type, found: !!html, criteriaKeys: Object.keys(criteriaData) });
 
     const contentDiv = document.getElementById('criteria-content');
 
