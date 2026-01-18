@@ -13,7 +13,7 @@ let criteriaDataCoop = {}; // Store coop criteria { '1.1': 'html...', ... }
 let criteriaDataFG = {}; // Store farmer group criteria
 let currentCriteriaCode = null; // Current indicator code being viewed/edited
 let currentCriteriaType = null; // 'coop' or 'farmer_group'
-let tinymceEditor = null; // TinyMCE editor instance
+let quillEditor = null; // Quill editor instance
 
 // Initialize with default placeholders for Cooperatives (สหกรณ์)
 let INDICATOR_INFO = {
@@ -1189,33 +1189,31 @@ function openCriteriaEditor() {
     const criteriaData = type === 'farmer_group' ? criteriaDataFG : criteriaDataCoop;
     const html = criteriaData[code] || '';
 
-    // Initialize TinyMCE if not already
-    if (tinymceEditor) {
-        tinymce.remove('#criteria-editor-textarea');
-    }
+    // Clear the editor container
+    const container = document.getElementById('criteria-editor-container');
+    container.innerHTML = '';
 
-    // Set textarea value first
-    document.getElementById('criteria-editor-textarea').value = html;
-
-    // Initialize TinyMCE
-    tinymce.init({
-        selector: '#criteria-editor-textarea',
-        height: 400,
-        menubar: true,
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount'
-        ],
-        toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | removeformat | help',
-        content_style: 'body { font-family: Kanit, sans-serif; font-size: 14px; }',
-        language: 'th_TH',
-        skin: isDarkMode ? 'oxide-dark' : 'oxide',
-        content_css: isDarkMode ? 'dark' : 'default',
-        setup: function (editor) {
-            tinymceEditor = editor;
-        }
+    // Initialize Quill
+    quillEditor = new Quill('#criteria-editor-container', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['link', 'image'],
+                ['clean']
+            ]
+        },
+        placeholder: 'พิมพ์รายละเอียดเกณฑ์ที่นี่...'
     });
+
+    // Set initial content
+    if (html) {
+        quillEditor.root.innerHTML = html;
+    }
 
     // Show editor modal
     document.getElementById('criteriaEditorModal').classList.remove('hidden');
@@ -1225,10 +1223,8 @@ function openCriteriaEditor() {
  * Close Criteria Editor
  */
 function closeCriteriaEditor() {
-    if (tinymceEditor) {
-        tinymce.remove('#criteria-editor-textarea');
-        tinymceEditor = null;
-    }
+    quillEditor = null;
+    document.getElementById('criteria-editor-container').innerHTML = '';
     document.getElementById('criteriaEditorModal').classList.add('hidden');
 }
 
@@ -1244,12 +1240,10 @@ function saveCriteriaContent() {
     const code = currentCriteriaCode;
     const type = currentCriteriaType;
 
-    // Get content from TinyMCE
+    // Get content from Quill
     let html = '';
-    if (tinymceEditor) {
-        html = tinymce.get('criteria-editor-textarea').getContent();
-    } else {
-        html = document.getElementById('criteria-editor-textarea').value;
+    if (quillEditor) {
+        html = quillEditor.root.innerHTML;
     }
 
     showLoader(true);
