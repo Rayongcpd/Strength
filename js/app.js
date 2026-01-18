@@ -1117,7 +1117,8 @@ function fetchCriteriaData(type, callback) {
             if (callback) callback();
         })
         .withFailureHandler((err) => {
-            console.error('Failed to fetch criteria:', err);
+            console.error('Failed to fetch criteria (' + type + '):', err);
+            // Still callback to proceed chain even if failed
             if (callback) callback();
         })
         .getIndicatorCriteria(type);
@@ -1290,8 +1291,13 @@ function saveCriteriaContent() {
 /**
  * Load all criteria data on app init
  */
+// Load criteria sequentially to prevent Apps Script concurrent limit issues
 function loadAllCriteriaData() {
-    // Load both coop and farmer group criteria
-    fetchCriteriaData('coop');
-    fetchCriteriaData('farmer_group');
+    console.log('Starting criteria load sequence...');
+    fetchCriteriaData('coop', () => {
+        console.log('Coop criteria loaded. Fetching Farmer Group...');
+        fetchCriteriaData('farmer_group', () => {
+            console.log('All criteria data loaded.');
+        });
+    });
 }
