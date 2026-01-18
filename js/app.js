@@ -511,10 +511,12 @@ function openModal() {
     document.getElementById('rowId').value = ""; // Mode Add
     document.getElementById('modal-title').innerText = "📝 เพิ่มข้อมูลใหม่";
     updateLiveScore();
+    document.body.classList.add('overflow-hidden');
 }
 
 function closeModal() {
     document.getElementById('dataModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
 }
 
 // --- Details View ---
@@ -665,10 +667,12 @@ function viewDetails(id) {
 
     switchTab(1);
     document.getElementById('detailModal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
 }
 
 function closeDetailModal() {
     document.getElementById('detailModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
 }
 
 function switchTab(dim) {
@@ -888,10 +892,12 @@ function handleExcelImport(input) {
 // --- Import Modal logic ---
 function openImportModal() {
     document.getElementById('importModal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
 }
 
 function closeImportModal() {
     document.getElementById('importModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
     importRawData = []; // Clear memory
 }
 
@@ -1179,6 +1185,7 @@ function viewIndicatorCriteria(code, type) {
 
     // Show modal
     document.getElementById('criteriaModal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
 }
 
 /**
@@ -1186,6 +1193,7 @@ function viewIndicatorCriteria(code, type) {
  */
 function closeCriteriaModal() {
     document.getElementById('criteriaModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
 }
 
 /**
@@ -1287,6 +1295,7 @@ function openCriteriaEditor() {
 
     // Show editor modal
     document.getElementById('criteriaEditorModal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
 }
 
 /**
@@ -1295,6 +1304,7 @@ function openCriteriaEditor() {
 function closeCriteriaEditor() {
     // Just hide the modal, keep the editor instance alive
     document.getElementById('criteriaEditorModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
 }
 
 /**
