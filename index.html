@@ -43,6 +43,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SheetJS for Excel Import -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+    <!-- MathJax for Math Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+    <!-- TinyMCE WYSIWYG Editor -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 
 <body class="text-gray-700 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-200">
@@ -560,6 +577,103 @@
                     id="detail-modal-footer">
                     <button type="button" onclick="closeDetailModal()"
                         class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Criteria View Modal -->
+    <div id="criteriaModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="criteria-modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-gray-900 dark:bg-opacity-80"
+                aria-hidden="true" onclick="closeCriteriaModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="bg-info px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
+                    <div class="flex items-center gap-2">
+                        <span class="text-white text-xl">ℹ️</span>
+                        <h3 class="text-lg leading-6 font-bold text-white" id="criteria-modal-title">
+                            รายละเอียดเกณฑ์ตัวชี้วัด</h3>
+                    </div>
+                    <button type="button" onclick="closeCriteriaModal()"
+                        class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                </div>
+
+                <div class="px-4 py-5 sm:p-6 max-h-[70vh] overflow-y-auto">
+                    <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">ตัวชี้วัด:</span>
+                        <span id="criteria-indicator-code" class="font-bold text-lg text-primary ml-2">-</span>
+                        <span id="criteria-indicator-type"
+                            class="text-xs text-gray-500 dark:text-gray-400 ml-2">(สหกรณ์)</span>
+                    </div>
+
+                    <!-- Criteria Content (Rendered HTML + MathJax) -->
+                    <div id="criteria-content" class="prose dark:prose-invert max-w-none criteria-content">
+                        <p class="text-gray-500 dark:text-gray-400 italic text-center py-8">
+                            ยังไม่มีข้อมูลเกณฑ์สำหรับตัวชี้วัดนี้</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-2"
+                    id="criteria-modal-footer">
+                    <button type="button" id="criteria-edit-btn" onclick="openCriteriaEditor()"
+                        class="hidden inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-white font-medium hover:bg-yellow-600 focus:outline-none sm:text-sm">✏️
+                        แก้ไข</button>
+                    <button type="button" onclick="closeCriteriaModal()"
+                        class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Criteria Editor Modal (Admin Only) -->
+    <div id="criteriaEditorModal" class="fixed inset-0 z-[70] hidden overflow-y-auto"
+        aria-labelledby="criteria-editor-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-gray-900 dark:bg-opacity-80"
+                aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div
+                    class="bg-yellow-500 px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
+                    <div class="flex items-center gap-2">
+                        <span class="text-white text-xl">✏️</span>
+                        <h3 class="text-lg leading-6 font-bold text-white" id="criteria-editor-title">
+                            แก้ไขเกณฑ์ตัวชี้วัด</h3>
+                    </div>
+                    <button type="button" onclick="closeCriteriaEditor()"
+                        class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                </div>
+
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">กำลังแก้ไขเกณฑ์:</span>
+                            <span id="editor-indicator-code" class="font-bold text-lg text-primary ml-2">-</span>
+                            <span id="editor-indicator-type"
+                                class="text-xs text-gray-500 dark:text-gray-400 ml-2">(สหกรณ์)</span>
+                        </div>
+                        <div class="text-xs text-gray-400">
+                            💡 สูตร: <code class="bg-gray-200 dark:bg-gray-600 px-1 rounded">$$\frac{a}{b}$$</code>
+                            สำหรับเศษส่วน
+                        </div>
+                    </div>
+
+                    <!-- TinyMCE Editor Container -->
+                    <textarea id="criteria-editor-textarea" class="w-full h-64"></textarea>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-2">
+                    <button type="button" onclick="saveCriteriaContent()"
+                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none sm:text-sm">💾
+                        บันทึก</button>
+                    <button type="button" onclick="closeCriteriaEditor()"
+                        class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ยกเลิก</button>
                 </div>
             </div>
         </div>

@@ -62,3 +62,102 @@ th {
 td {
     white-space: nowrap;
 }
+
+/* Criteria Content Styles */
+.criteria-content {
+    line-height: 1.7;
+}
+
+.criteria-content h1,
+.criteria-content h2,
+.criteria-content h3,
+.criteria-content h4 {
+    color: #26A69A;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.criteria-content h1 {
+    font-size: 1.5rem;
+}
+
+.criteria-content h2 {
+    font-size: 1.25rem;
+}
+
+.criteria-content h3 {
+    font-size: 1.1rem;
+}
+
+.criteria-content h4 {
+    font-size: 1rem;
+}
+
+.criteria-content p {
+    margin-bottom: 0.75rem;
+}
+
+.criteria-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+}
+
+.criteria-content th,
+.criteria-content td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    white-space: normal;
+}
+
+.criteria-content th {
+    background-color: #0288D1;
+    color: white;
+    font-weight: 600;
+}
+
+.criteria-content tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.criteria-content tr:hover {
+    background-color: #e5f3ff;
+}
+
+/* Dark Mode Criteria */
+html.dark .criteria-content h1,
+html.dark .criteria-content h2,
+html.dark .criteria-content h3,
+html.dark .criteria-content h4 {
+    color: #4FD1C5;
+}
+
+html.dark .criteria-content th,
+html.dark .criteria-content td {
+    border-color: #4b5563;
+}
+
+html.dark .criteria-content th {
+    background-color: #1e40af;
+}
+
+html.dark .criteria-content tr:nth-child(even) {
+    background-color: #374151;
+}
+
+html.dark .criteria-content tr:hover {
+    background-color: #1f2937;
+}
+
+/* MathJax Styling */
+.criteria-content .MathJax {
+    font-size: 1.1em !important;
+}
+
+/* Info Button Styling */
+.text-info {
+    color: #0288D1;
+}

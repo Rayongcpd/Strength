@@ -8,6 +8,13 @@ let isAdmin = false;
 let currentIndicatorConfig = null; // Will load from server
 let isDarkMode = false; // State for dark mode
 
+// Criteria State
+let criteriaDataCoop = {}; // Store coop criteria { '1.1': 'html...', ... }
+let criteriaDataFG = {}; // Store farmer group criteria
+let currentCriteriaCode = null; // Current indicator code being viewed/edited
+let currentCriteriaType = null; // 'coop' or 'farmer_group'
+let tinymceEditor = null; // TinyMCE editor instance
+
 // Initialize with default placeholders for Cooperatives (สหกรณ์)
 let INDICATOR_INFO = {
     // Dimension 1
@@ -142,6 +149,7 @@ window.onload = function () {
     updateAdminState(); // Init restricted state
     setupSecretTrigger();
     initDarkMode(); // Init Theme
+    loadAllCriteriaData(); // Load criteria for info buttons
 };
 
 // --- Dark Mode Logic ---
@@ -563,6 +571,9 @@ function viewDetails(id) {
             const coopAdvice = (item.advice && item.advice[d.key]) ? item.advice[d.key] : "";
             const val = parseFloat(d.val) || 0;
 
+            // Determine criteria type based on item name
+            const criteriaType = (item.name && item.name.includes('กลุ่มเกษตรกร')) ? 'farmer_group' : 'coop';
+
             let descDisplay = info.desc;
             let adviceInput = "";
 
@@ -588,7 +599,14 @@ function viewDetails(id) {
 
             html += `
                 <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 align-top">
-                    <td class="px-2 py-3 font-bold text-gray-900 dark:text-white text-center align-top">${info.code}</td>
+                    <td class="px-2 py-3 text-center align-top">
+                        <div class="flex items-center justify-center gap-1">
+                            <span class="font-bold text-gray-900 dark:text-white">${info.code}</span>
+                            <button onclick="viewIndicatorCriteria('${info.code}', '${criteriaType}')" 
+                                class="text-info hover:text-blue-700 text-sm p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition" 
+                                title="ดูรายละเอียดเกณฑ์">ℹ️</button>
+                        </div>
+                    </td>
                     <td class="px-2 py-3 text-wrap pr-2">
                         <div>${descDisplay}</div>
                         ${adviceInput}
@@ -1075,4 +1093,197 @@ function saveLocalAdvice() {
             Swal.fire('Error', err.message, 'error');
         })
         .saveCoopAdvice(item.id, JSON.stringify(item.advice));
+}
+
+// ===========================================
+// INDICATOR CRITERIA FUNCTIONS
+// ===========================================
+
+/**
+ * Fetch Criteria Data from Backend
+ * @param {string} type - 'coop' or 'farmer_group'
+ */
+function fetchCriteriaData(type, callback) {
+    google.script.run
+        .withSuccessHandler((res) => {
+            if (type === 'farmer_group') {
+                criteriaDataFG = res.criteria || {};
+            } else {
+                criteriaDataCoop = res.criteria || {};
+            }
+            if (callback) callback();
+        })
+        .withFailureHandler((err) => {
+            console.error('Failed to fetch criteria:', err);
+            if (callback) callback();
+        })
+        .getIndicatorCriteria(type);
+}
+
+/**
+ * View Indicator Criteria Modal
+ * @param {string} code - Indicator code (e.g., '1.1')
+ * @param {string} type - 'coop' or 'farmer_group'
+ */
+function viewIndicatorCriteria(code, type) {
+    currentCriteriaCode = code;
+    currentCriteriaType = type || 'coop';
+
+    const typeLabel = currentCriteriaType === 'farmer_group' ? '(กลุ่มเกษตรกร)' : '(สหกรณ์)';
+
+    // Update modal header
+    document.getElementById('criteria-indicator-code').innerText = code;
+    document.getElementById('criteria-indicator-type').innerText = typeLabel;
+
+    // Get criteria content
+    const criteriaData = currentCriteriaType === 'farmer_group' ? criteriaDataFG : criteriaDataCoop;
+    const html = criteriaData[code] || '';
+
+    const contentDiv = document.getElementById('criteria-content');
+
+    if (html && html.trim()) {
+        contentDiv.innerHTML = html;
+        // Trigger MathJax to render formulas
+        if (window.MathJax && MathJax.typesetPromise) {
+            MathJax.typesetPromise([contentDiv]).catch((err) => console.error('MathJax error:', err));
+        }
+    } else {
+        contentDiv.innerHTML = '<p class="text-gray-500 dark:text-gray-400 italic text-center py-8">ยังไม่มีข้อมูลเกณฑ์สำหรับตัวชี้วัดนี้</p>';
+    }
+
+    // Show/hide edit button based on admin status
+    const editBtn = document.getElementById('criteria-edit-btn');
+    if (editBtn) {
+        editBtn.classList.toggle('hidden', !isAdmin);
+    }
+
+    // Show modal
+    document.getElementById('criteriaModal').classList.remove('hidden');
+}
+
+/**
+ * Close Criteria Modal
+ */
+function closeCriteriaModal() {
+    document.getElementById('criteriaModal').classList.add('hidden');
+}
+
+/**
+ * Open Criteria Editor (Admin Only)
+ */
+function openCriteriaEditor() {
+    if (!isAdmin) {
+        Swal.fire('Error', 'คุณไม่มีสิทธิ์แก้ไข', 'error');
+        return;
+    }
+
+    const code = currentCriteriaCode;
+    const type = currentCriteriaType;
+    const typeLabel = type === 'farmer_group' ? '(กลุ่มเกษตรกร)' : '(สหกรณ์)';
+
+    // Update editor header
+    document.getElementById('editor-indicator-code').innerText = code;
+    document.getElementById('editor-indicator-type').innerText = typeLabel;
+
+    // Get current content
+    const criteriaData = type === 'farmer_group' ? criteriaDataFG : criteriaDataCoop;
+    const html = criteriaData[code] || '';
+
+    // Initialize TinyMCE if not already
+    if (tinymceEditor) {
+        tinymce.remove('#criteria-editor-textarea');
+    }
+
+    // Set textarea value first
+    document.getElementById('criteria-editor-textarea').value = html;
+
+    // Initialize TinyMCE
+    tinymce.init({
+        selector: '#criteria-editor-textarea',
+        height: 400,
+        menubar: true,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | removeformat | help',
+        content_style: 'body { font-family: Kanit, sans-serif; font-size: 14px; }',
+        language: 'th_TH',
+        skin: isDarkMode ? 'oxide-dark' : 'oxide',
+        content_css: isDarkMode ? 'dark' : 'default',
+        setup: function (editor) {
+            tinymceEditor = editor;
+        }
+    });
+
+    // Show editor modal
+    document.getElementById('criteriaEditorModal').classList.remove('hidden');
+}
+
+/**
+ * Close Criteria Editor
+ */
+function closeCriteriaEditor() {
+    if (tinymceEditor) {
+        tinymce.remove('#criteria-editor-textarea');
+        tinymceEditor = null;
+    }
+    document.getElementById('criteriaEditorModal').classList.add('hidden');
+}
+
+/**
+ * Save Criteria Content (Admin Only)
+ */
+function saveCriteriaContent() {
+    if (!isAdmin) {
+        Swal.fire('Error', 'คุณไม่มีสิทธิ์บันทึก', 'error');
+        return;
+    }
+
+    const code = currentCriteriaCode;
+    const type = currentCriteriaType;
+
+    // Get content from TinyMCE
+    let html = '';
+    if (tinymceEditor) {
+        html = tinymce.get('criteria-editor-textarea').getContent();
+    } else {
+        html = document.getElementById('criteria-editor-textarea').value;
+    }
+
+    showLoader(true);
+
+    google.script.run
+        .withSuccessHandler((res) => {
+            showLoader(false);
+
+            // Update local cache
+            if (type === 'farmer_group') {
+                criteriaDataFG[code] = html;
+            } else {
+                criteriaDataCoop[code] = html;
+            }
+
+            closeCriteriaEditor();
+
+            // Update the view modal content
+            viewIndicatorCriteria(code, type);
+
+            Swal.fire('สำเร็จ', res.message, 'success');
+        })
+        .withFailureHandler((err) => {
+            showLoader(false);
+            Swal.fire('Error', 'บันทึกล้มเหลว: ' + err.message, 'error');
+        })
+        .saveIndicatorCriteria(code, html, type);
+}
+
+/**
+ * Load all criteria data on app init
+ */
+function loadAllCriteriaData() {
+    // Load both coop and farmer group criteria
+    fetchCriteriaData('coop');
+    fetchCriteriaData('farmer_group');
 }
