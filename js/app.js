@@ -1214,18 +1214,72 @@ function openCriteriaEditor() {
         quillEditor = new Quill('#criteria-editor-container', {
             theme: 'snow',
             modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    [{ 'align': [] }],
-                    ['link', 'image'],
-                    ['clean']
-                ]
+                toolbar: {
+                    container: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        ['link', 'image'],
+                        ['clean']
+                    ],
+                    handlers: {
+                        image: selectLocalImage
+                    }
+                }
             },
-            placeholder: 'พิมพ์รายละเอียดเกณฑ์ที่นี่...'
+            placeholder: 'พิมพ์รายละเอียดเกณฑ์ที่นี่...\n(รูปรองรับการอัพโหลดไม่เกิน 5MB)'
         });
+    }
+
+    /**
+     * Handler for Quill Image Upload
+     */
+    function selectLocalImage() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = () => {
+            const file = input.files[0];
+            if (file) {
+                // Limit size 5MB
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire('Error', 'ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB', 'error');
+                    return;
+                }
+
+                // Show loading placeholder at cursor
+                const range = quillEditor.getSelection();
+                const loadingPlaceholder = ' กําลังอัพโหลดรูปภาพ... ';
+                quillEditor.insertText(range.index, loadingPlaceholder, { 'color': '#0288D1', 'italic': true });
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64Data = e.target.result.split(',')[1];
+
+                    google.script.run
+                        .withSuccessHandler((res) => {
+                            // Remove placeholder
+                            quillEditor.deleteText(range.index, loadingPlaceholder.length);
+
+                            if (res.success) {
+                                quillEditor.insertEmbed(range.index, 'image', res.url);
+                            } else {
+                                Swal.fire('Error', 'อัพโหลดรูปภาพไม่สำเร็จ: ' + res.error, 'error');
+                            }
+                        })
+                        .withFailureHandler((err) => {
+                            quillEditor.deleteText(range.index, loadingPlaceholder.length);
+                            Swal.fire('Error', 'เกิดข้อผิดพลาดในการอัพโหลด: ' + err, 'error');
+                        })
+                        .uploadImage(base64Data, file.type, file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
     }
 
     // Set content (Always overwrite with current data)
