@@ -640,11 +640,11 @@ function viewDetails(id) {
         container.innerHTML = html;
     }
 
-    // Special Case for Dim 3 Fail Text - render as proper indicator row
+    // Special Case for Dim 3 Fail Text - render as proper indicator row like other indicators
     const failText = v[21];
     if (failText) {
         const indicatorSet = getIndicatorInfo(item.name);
-        const failInfo = indicatorSet['d3_fail'] || { code: 'ภาพรวม', desc: 'ระบบข้อมูลสารสนเทศและการสื่อสาร (4 คะแนน)' };
+        const failInfo = indicatorSet['d3_fail'] || { code: 'ภาพรวม', desc: 'ภาพรวมไม่เข้าเกณฑ์' };
         const failAdvice = (item.advice && item.advice['d3_fail']) ? item.advice['d3_fail'] : "";
         const failVal = parseFloat(failText) || 0;
         const criteriaType = (item.name && item.name.includes('กลุ่มเกษตรกร')) ? 'farmer_group' : 'coop';
@@ -668,19 +668,36 @@ function viewDetails(id) {
             }
         }
 
-        document.getElementById('tab-content-3').innerHTML += `
-            <div class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="text-amber-600 dark:text-amber-400 font-bold">⚠️ หมายเหตุ (ภาพรวมไม่เข้าเกณฑ์):</span>
-                    <span class="ml-auto font-bold text-amber-700 dark:text-amber-300">${failVal.toFixed(2)}</span>
-                </div>
-                <div class="text-sm text-gray-700 dark:text-gray-300">
-                    <div class="mb-1"><span class="text-xs text-gray-500 dark:text-gray-400">คำอธิบาย:</span></div>
-                    <div>${failDescDisplay}</div>
-                    ${failAdviceInput}
-                </div>
-            </div>
-            `;
+        // Add as a proper table row matching other indicators
+        const failRowHtml = `
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-separate border-spacing-y-2 mt-4">
+                <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-amber-50 dark:bg-amber-900/30">
+                    <tr>
+                        <th class="px-2 py-2 w-24 text-center">หมายเหตุ</th>
+                        <th class="px-2 py-2">คำอธิบาย</th>
+                        <th class="px-2 py-2 text-right w-24">คะแนน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 align-top">
+                        <td class="px-2 py-3 text-center align-top">
+                            <div class="flex items-center justify-center gap-1">
+                                <span class="font-bold text-amber-600 dark:text-amber-400 text-xs">⚠️ ภาพรวม</span>
+                                <button onclick="viewIndicatorCriteria('overview', '${criteriaType}')" 
+                                    class="text-info hover:text-blue-700 text-sm p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition" 
+                                    title="ดูรายละเอียดเกณฑ์">ℹ️</button>
+                            </div>
+                        </td>
+                        <td class="px-2 py-3 text-wrap pr-2">
+                            <div>${failDescDisplay}</div>
+                            ${failAdviceInput}
+                        </td>
+                        <td class="px-2 py-3 text-right font-medium align-top ${failVal > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500'}">${failVal.toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>`;
+
+        document.getElementById('tab-content-3').innerHTML += failRowHtml;
     }
 
     // Reset Tabs to 1
