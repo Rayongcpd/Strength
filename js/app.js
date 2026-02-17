@@ -640,12 +640,45 @@ function viewDetails(id) {
         container.innerHTML = html;
     }
 
-    // Special Case for Dim 3 Fail Text
+    // Special Case for Dim 3 Fail Text - render as proper indicator row
     const failText = v[21];
     if (failText) {
+        const indicatorSet = getIndicatorInfo(item.name);
+        const failInfo = indicatorSet['d3_fail'] || { code: 'ภาพรวม', desc: 'ระบบข้อมูลสารสนเทศและการสื่อสาร (4 คะแนน)' };
+        const failAdvice = (item.advice && item.advice['d3_fail']) ? item.advice['d3_fail'] : "";
+        const failVal = parseFloat(failText) || 0;
+        const criteriaType = (item.name && item.name.includes('กลุ่มเกษตรกร')) ? 'farmer_group' : 'coop';
+
+        let failDescDisplay = failInfo.desc;
+        let failAdviceInput = "";
+
+        if (isAdmin) {
+            failDescDisplay = `<input type="text" class="border rounded p-1 w-full text-xs bg-yellow-50 focus:bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:bg-gray-700" 
+                value="${failInfo.desc}" onchange="updateIndicatorField('d3_fail', 'desc', this.value)">`;
+            failAdviceInput = `<div class="mt-1">
+                    <label class="text-[10px] text-gray-400">คำแนะนำ:</label>
+                    <textarea class="w-full border rounded p-1 text-xs bg-blue-50 focus:bg-white resize-y" rows="2" placeholder="เพิ่มคำแนะนำเฉพาะสหกรณ์นี้..."
+                    onchange="updateLocalAdvice('d3_fail', this.value)">${failAdvice}</textarea>
+                </div>`;
+        } else {
+            if (failAdvice) {
+                failAdviceInput = `<div class="mt-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-xs text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-600">
+                    <strong class="text-primary dark:text-primary-400">💡 คำแนะนำ:</strong> ${failAdvice}
+                 </div>`;
+            }
+        }
+
         document.getElementById('tab-content-3').innerHTML += `
-            <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded border border-red-200 dark:border-red-900">
-                <span class="font-bold">⚠️ หมายเหตุ (ภาพรวมไม่เข้าเกณฑ์):</span> ${failText}
+            <div class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-amber-600 dark:text-amber-400 font-bold">⚠️ หมายเหตุ (ภาพรวมไม่เข้าเกณฑ์):</span>
+                    <span class="ml-auto font-bold text-amber-700 dark:text-amber-300">${failVal.toFixed(2)}</span>
+                </div>
+                <div class="text-sm text-gray-700 dark:text-gray-300">
+                    <div class="mb-1"><span class="text-xs text-gray-500 dark:text-gray-400">คำอธิบาย:</span></div>
+                    <div>${failDescDisplay}</div>
+                    ${failAdviceInput}
+                </div>
             </div>
             `;
     }
