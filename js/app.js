@@ -363,24 +363,24 @@ function renderTable() {
         tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition border-b dark:border-gray-700';
 
         // Color badge for grade (normalize for both "ชั้น 1" and "ชั้น1")
-        let gradeBadge = 'bg-gray-200 text-gray-800';
-        if (d.grade && d.grade.includes('1')) gradeBadge = 'bg-secondary text-white';
-        if (d.grade && d.grade.includes('2')) gradeBadge = 'bg-accent text-gray-800';
-        if (d.grade && d.grade.includes('3')) gradeBadge = 'bg-danger text-white';
+        let gradeBadge = 'bg-gray-100 text-gray-500';
+        if (d.grade && d.grade.includes('1')) gradeBadge = 'bg-claude-accent text-white';
+        if (d.grade && d.grade.includes('2')) gradeBadge = 'bg-amber-100 text-amber-700 border border-amber-200';
+        if (d.grade && d.grade.includes('3')) gradeBadge = 'bg-rose-50 text-rose-600 border border-rose-100';
 
         // Trend Icon (🟢 ดีขึ้น, 🟡 คงเดิม, 🔴 แย่ลง)
-        let trendIcon = '🟡 <span class="text-yellow-600 dark:text-yellow-400 text-xs">คงเดิม</span>';
-        if (d.trend === 'ดีขึ้น') trendIcon = '🟢 <span class="text-green-600 dark:text-green-400 text-xs">ดีขึ้น</span>';
-        if (d.trend === 'แย่ลง') trendIcon = '🔴 <span class="text-red-600 dark:text-red-400 text-xs">แย่ลง</span>';
+        let trendIcon = '<div class="flex flex-col items-center"><span class="text-lg">🟡</span><span class="text-claude-muted dark:text-gray-400 text-[10px] font-medium">คงเดิม</span></div>';
+        if (d.trend === 'ดีขึ้น') trendIcon = '<div class="flex flex-col items-center"><span class="text-lg">🟢</span><span class="text-green-600 dark:text-green-400 text-[10px] font-medium">ดีขึ้น</span></div>';
+        if (d.trend === 'แย่ลง') trendIcon = '<div class="flex flex-col items-center"><span class="text-lg">🔴</span><span class="text-rose-600 dark:text-rose-400 text-[10px] font-medium">แย่ลง</span></div>';
 
         let actionHtml = `
-             <button onclick="viewDetails(${d.id})" class="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 p-1 rounded" title="ดูรายละเอียด">📄</button>
+             <button onclick="viewDetails(${d.id})" class="action-btn text-claude-muted dark:text-gray-400 hover:text-claude-text dark:hover:text-white p-1.5 rounded-lg transition" title="ดูรายละเอียด">📄</button>
         `;
 
         if (isAdmin) {
             actionHtml += `
-                 <button onclick="editData(${d.id})" class="text-blue-500 hover:bg-blue-50 p-1 rounded">✏️</button>
-                 <button onclick="deleteData(${d.id})" class="text-red-500 hover:bg-red-50 p-1 rounded">🗑️</button>
+                 <button onclick="editData(${d.id})" class="action-btn text-blue-500 hover:bg-blue-50 p-1.5 rounded-lg transition">✏️</button>
+                 <button onclick="deleteData(${d.id})" class="action-btn text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition">🗑️</button>
             `;
         }
 
@@ -393,14 +393,16 @@ function renderTable() {
         tr.innerHTML = `
             <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${index + 1}</td>
             ${codeCell}
-            <td class="px-4 py-3 font-semibold text-primary dark:text-primary-400">${d.name}</td>
-            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">${d.agency}</td>
-            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">${d.type}</td>
-            <td class="px-4 py-3 text-center font-bold dark:text-gray-200">${d.total.toFixed(2)}</td>
-            <td class="px-4 py-3 text-center"><span class="px-2 py-1 rounded-full text-xs font-bold ${gradeBadge}">${d.grade}</span></td>
-            <td class="px-4 py-3 text-center">${trendIcon}</td>
-            <td class="px-4 py-3 text-center flex justify-center gap-2">
-                 ${actionHtml}
+            <td class="px-6 py-4 font-semibold text-claude-text dark:text-white">${d.name}</td>
+            <td class="px-6 py-4 text-claude-muted dark:text-gray-400 text-xs font-medium">${d.agency}</td>
+            <td class="px-6 py-4 text-claude-muted dark:text-gray-400 text-xs font-medium">${d.type}</td>
+            <td class="px-6 py-4 text-center font-bold text-lg text-claude-text dark:text-white">${d.total.toFixed(2)}</td>
+            <td class="px-6 py-4 text-center"><span class="badge-grade ${gradeBadge}">${d.grade}</span></td>
+            <td class="px-6 py-4 text-center">${trendIcon}</td>
+            <td class="px-6 py-4">
+                <div class="flex items-center justify-center gap-1">
+                    ${actionHtml}
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
