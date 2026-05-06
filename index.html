@@ -326,7 +326,7 @@
                 </div>
                 <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" onclick="confirmImport()"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">ยืนยันการนำเข้า</button>
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-claude-accent text-base font-medium text-white hover:opacity-90 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">ยืนยันการนำเข้า</button>
                     <button type="button" onclick="closeImportModal()"
                         class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ยกเลิก</button>
                 </div>
@@ -388,9 +388,8 @@
                             <!-- 2. Dimensions -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Dim 1 -->
-                                <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded">
-                                    <h5 class="text-purple font-bold text-sm mb-2">มิติที่ 1
-                                        ความสามารถในการให้บริการสมาชิก</h5>
+                                <div class="p-4 rounded-2xl border border-claude-border dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20">
+                                    <h5 class="text-claude-text dark:text-white font-serif font-bold text-sm mb-3">มิติที่ 1 ความสามารถในการให้บริการสมาชิก</h5>
                                     <div class="grid grid-cols-3 gap-2">
                                         <input type="number" step="0.01" placeholder="1.1" name="d1_1"
                                             class="border p-1 text-sm rounded score-input dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -401,9 +400,8 @@
                                     </div>
                                 </div>
                                 <!-- Dim 4 -->
-                                <div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded">
-                                    <h5 class="text-orange-600 font-bold text-sm mb-2">มิติที่ 4
-                                        ประสิทธิภาพของการบริหารงาน</h5>
+                                <div class="p-4 rounded-2xl border border-claude-border dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20">
+                                    <h5 class="text-claude-text dark:text-white font-serif font-bold text-sm mb-3">มิติที่ 4 ประสิทธิภาพของการบริหารงาน</h5>
                                     <div class="grid grid-cols-4 gap-2">
                                         <input type="number" step="0.01" placeholder="4.1" name="d4_1"
                                             class="border p-1 text-sm rounded score-input dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -416,9 +414,8 @@
                                     </div>
                                 </div>
                                 <!-- Dim 2 -->
-                                <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded">
-                                    <h5 class="text-green-600 font-bold text-sm mb-2">มิติที่ 2
-                                        ประสิทธิภาพในการดำเนินธุรกิจ</h5>
+                                <div class="p-4 rounded-2xl border border-claude-border dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20">
+                                    <h5 class="text-claude-text dark:text-white font-serif font-bold text-sm mb-3">มิติที่ 2 ประสิทธิภาพในการดำเนินธุรกิจ</h5>
                                     <div class="grid grid-cols-3 gap-2">
                                         <input type="number" step="0.01" placeholder="2.1" name="d2_1"
                                             class="border p-1 text-sm rounded score-input dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -435,9 +432,8 @@
                                     </div>
                                 </div>
                                 <!-- Dim 3 -->
-                                <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded">
-                                    <h5 class="text-blue-600 font-bold text-sm mb-2">มิติที่ 3
-                                        ประสิทธิภาพในการจัดการองค์กร</h5>
+                                <div class="p-4 rounded-2xl border border-claude-border dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20">
+                                    <h5 class="text-claude-text dark:text-white font-serif font-bold text-sm mb-3">มิติที่ 3 ประสิทธิภาพในการจัดการองค์กร</h5>
                                     <div class="grid grid-cols-3 gap-2 mb-2">
                                         <input type="number" step="0.01" placeholder="3.1" name="d3_1"
                                             class="border p-1 text-sm rounded score-input dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -515,7 +511,7 @@
 
                     <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">บันทึก</button>
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-claude-accent text-base font-medium text-white hover:opacity-90 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">บันทึก</button>
                         <button type="button" onclick="closeModal()"
                             class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ยกเลิก</button>
                     </div>
