@@ -449,8 +449,9 @@ function updateCharts(data) {
             labels: ['ชั้น 1', 'ชั้น 2', 'ชั้น 3'],
             datasets: [{
                 data: [counts['ชั้น 1'], counts['ชั้น 2'], counts['ชั้น 3']],
-                backgroundColor: ['#AED581', '#FFCA28', '#EF5350'],
-                borderColor: isDarkMode ? '#1f2937' : '#ffffff'
+                backgroundColor: ['#8BA888', '#D4A373', '#C87D7D'],
+                borderColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+                borderWidth: 2
             }]
         },
         options: {
@@ -477,8 +478,8 @@ function updateCharts(data) {
             datasets: [{
                 label: 'จำนวนสหกรณ์',
                 data: [trends['ดีขึ้น'], trends['คงเดิม'], trends['แย่ลง']],
-                backgroundColor: ['#26A69A', '#90A4AE', '#EF5350'],
-                borderRadius: 5
+                backgroundColor: ['#8BA888', '#D9D9D9', '#C87D7D'],
+                borderRadius: 8
             }]
         },
         options: {
@@ -525,14 +526,16 @@ function viewDetails(id) {
     if (!item) return;
 
     document.getElementById('detail-title').innerText = item.name;
+    document.getElementById('detail-title').className = "text-2xl font-serif font-bold text-claude-text dark:text-white";
 
-    let subtitle = `สังกัด: ${item.agency} | คะแนนรวม: ${item.total.toFixed(2)} (${item.grade})`;
+    let subtitle = `<span class="font-medium">สังกัด:</span> ${item.agency} | <span class="font-medium">คะแนนรวม:</span> ${item.total.toFixed(2)} (${item.grade})`;
     if (isAdmin) {
-        subtitle = `รหัส: ${item.code} | ` + subtitle;
+        subtitle = `<span class="font-medium">รหัส:</span> ${item.code} | ` + subtitle;
     }
     subtitle += ` <span id="detail-modal-id" data-id="${item.id}" class="hidden"></span>`;
 
     document.getElementById('detail-subtitle').innerHTML = subtitle;
+    document.getElementById('detail-subtitle').className = "text-sm text-claude-muted dark:text-gray-400 mt-1";
 
     const v = item.fullRow;
     // Map values similarly to editData
@@ -557,15 +560,16 @@ function viewDetails(id) {
     for (let dim = 1; dim <= 4; dim++) {
         const container = document.getElementById(`tab-content-${dim}`);
         let html = `
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-separate border-spacing-y-2">
-                <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-gray-700">
+            <div class="overflow-hidden rounded-2xl border border-claude-border dark:border-gray-800">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs font-bold text-claude-muted dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-800/50 border-b border-claude-border dark:border-gray-800">
                     <tr>
-                        <th class="px-2 py-2 w-24 text-center">ตัวชี้วัด</th>
-                        <th class="px-2 py-2">คำอธิบาย</th>
-                        <th class="px-2 py-2 text-right w-24">คะแนน</th>
+                        <th class="px-4 py-3 w-24 text-center">ตัวชี้วัด</th>
+                        <th class="px-4 py-3">คำอธิบาย</th>
+                        <th class="px-4 py-3 text-right w-24">คะแนน</th>
                     </tr>
                 </thead>
-            <tbody>`;
+            <tbody class="divide-y divide-claude-border dark:divide-gray-800">`;
 
         dataMap[dim].forEach(d => {
             // Get correct indicator info based on name (สหกรณ์ vs กลุ่มเกษตรกร)
@@ -630,12 +634,13 @@ function viewDetails(id) {
         sum = parseFloat(sum) || 0;
 
         html += `
-                <tr class="bg-gray-100 dark:bg-gray-700 font-bold">
-                    <td class="px-4 py-2" colspan="2">รวมมิติที่ ${dim}</td>
-                    <td class="px-4 py-2 text-right text-gray-900 dark:text-white">${sum.toFixed(2)}</td>
+                <tr class="bg-gray-50/50 dark:bg-gray-800/50 font-bold text-claude-text dark:text-white">
+                    <td class="px-6 py-4" colspan="2">รวมมิติที่ ${dim}</td>
+                    <td class="px-6 py-4 text-right">${sum.toFixed(2)}</td>
                 </tr>
             </tbody>
-        </table > `;
+        </table > 
+        </div>`;
 
         container.innerHTML = html;
     }

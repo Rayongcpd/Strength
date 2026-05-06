@@ -9,7 +9,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -22,16 +22,23 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Kanit', 'sans-serif'],
+                        sans: ['Inter', 'Kanit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        primary: '#26A69A',
-                        secondary: '#AED581',
-                        accent: '#FFCA28',
-                        danger: '#EF5350',
-                        info: '#0288D1',
-                        warn: '#FBC02D',
-                        purple: '#4A2C6D'
+                        primary: '#1A1A1A',
+                        accent: '#D97757',
+                        claude: {
+                            bg: '#F9F9F8',
+                            surface: '#FFFFFF',
+                            border: '#E5E5E5',
+                            text: '#1A1A1A',
+                            muted: '#666666'
+                        },
+                        secondary: '#666666',
+                        danger: '#E05252',
+                        info: '#4B6BFB',
+                        warn: '#F2C94C',
                     }
                 }
             }
@@ -63,42 +70,42 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 </head>
 
-<body class="text-gray-700 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-200">
+<body class="bg-claude-bg text-claude-text dark:bg-gray-950 dark:text-gray-200 transition-colors duration-200 antialiased">
 
     <!-- Loading Spinner -->
     <div id="loader" class="loading-overlay">
-        <div class="text-center">
-            <div class="spinner mx-auto mb-2"></div>
-            <p class="text-primary font-bold">กำลังโหลดข้อมูล...</p>
+        <div class="text-center animate-fade-in-up">
+            <div class="spinner mx-auto mb-4"></div>
+            <p class="text-claude-text dark:text-white font-serif font-bold text-lg tracking-wide">กำลังรวบรวมข้อมูล...</p>
+            <p class="text-claude-muted dark:text-gray-400 text-xs mt-1 uppercase letter-spacing-widest">Cooperative Strengthening</p>
         </div>
     </div>
 
     <!-- Layout -->
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="bg-gradient-to-r from-primary to-purple text-white p-4 shadow-lg shrink-0">
-            <div class="container mx-auto flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl cursor-pointer select-none" id="secret-login-trigger"
-                        title="ระบบรายงานความเข้มแข็ง">🏛️</span>
-                    <div>
-                        <h1 class="text-2xl font-bold">ระบบรายงานความเข้มแข็งของสหกรณ์</h1>
-                        <p class="text-sm opacity-90">ประจำปีงบประมาณ 2568</p>
+        <header class="glass-header border-b border-claude-border dark:border-gray-800 p-6 shrink-0">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex flex-col items-center md:items-start animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="text-3xl cursor-pointer select-none" id="secret-login-trigger">🏛️</span>
+                        <h1 class="text-3xl font-serif font-bold tracking-tight text-claude-text dark:text-white">ระบบรายงานความเข้มแข็งของสหกรณ์</h1>
                     </div>
+                    <p class="text-claude-muted dark:text-gray-400 font-medium">ประจำปีงบประมาณ 2568 • <span class="opacity-75">Cooperative Strengthening Report</span></p>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3 animate-fade-in-up" style="animation-delay: 0.2s">
                     <button id="theme-toggle" onclick="toggleDarkMode()"
-                        class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition"
+                        class="border border-claude-border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 p-2.5 rounded-xl transition-all shadow-sm"
                         title="สลับโหมดมืด/สว่าง">
                         <span id="theme-icon">🌙</span>
                     </button>
                     <button id="admin-btn" onclick="adminLogin()"
-                        class="hidden bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition"
+                        class="hidden border border-claude-border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 p-2.5 rounded-xl transition-all shadow-sm"
                         title="สำหรับผู้ดูแลระบบ">
                         🔒
                     </button>
                     <button id="admin-logout-btn" onclick="adminLogout()"
-                        class="hidden bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded transition">
+                        class="hidden bg-claude-text text-white text-sm px-5 py-2.5 rounded-xl transition hover:opacity-90 shadow-sm font-medium">
                         ออกจากระบบ
                     </button>
                 </div>
@@ -109,49 +116,45 @@
         <main class="flex-grow container mx-auto p-4 space-y-6">
 
             <!-- Dashboard Widgets -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up" style="animation-delay: 0.3s">
                 <!-- Card 1: Total Coop -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 border-l-4 border-primary hover:shadow-md transition">
-                    <div class="flex justify-between items-center">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-claude-border dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300 group">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">จำนวนสหกรณ์ทั้งหมด</p>
-                            <h3 class="text-3xl font-bold text-gray-800 dark:text-white" id="stat-total">0</h3>
+                            <p class="text-claude-muted dark:text-gray-400 text-sm font-medium mb-1">จำนวนสหกรณ์ทั้งหมด</p>
+                            <h3 class="text-4xl font-serif font-bold text-claude-text dark:text-white" id="stat-total">0</h3>
                         </div>
-                        <div class="bg-primary/10 p-3 rounded-full text-primary text-xl">🏢</div>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-2xl text-2xl group-hover:scale-110 transition-transform">🏢</div>
                     </div>
                 </div>
                 <!-- Card 2: Class 1 -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 border-l-4 border-secondary hover:shadow-md transition">
-                    <div class="flex justify-between items-center">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-claude-border dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300 group">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">ชั้น 1 (เข้มแข็งมาก)</p>
-                            <h3 class="text-3xl font-bold text-gray-800 dark:text-white" id="stat-c1">0</h3>
+                            <p class="text-claude-muted dark:text-gray-400 text-sm font-medium mb-1">ชั้น 1 (เข้มแข็งมาก)</p>
+                            <h3 class="text-4xl font-serif font-bold text-claude-text dark:text-white" id="stat-c1">0</h3>
                         </div>
-                        <div class="bg-secondary/10 p-3 rounded-full text-secondary text-xl">🏆</div>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-2xl text-2xl group-hover:scale-110 transition-transform text-green-600">🏆</div>
                     </div>
                 </div>
                 <!-- Card 3: Class 2 -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 border-l-4 border-accent hover:shadow-md transition">
-                    <div class="flex justify-between items-center">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-claude-border dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300 group">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">ชั้น 2 (ปานกลาง)</p>
-                            <h3 class="text-3xl font-bold text-gray-800 dark:text-white" id="stat-c2">0</h3>
+                            <p class="text-claude-muted dark:text-gray-400 text-sm font-medium mb-1">ชั้น 2 (ปานกลาง)</p>
+                            <h3 class="text-4xl font-serif font-bold text-claude-text dark:text-white" id="stat-c2">0</h3>
                         </div>
-                        <div class="bg-accent/10 p-3 rounded-full text-accent text-xl">⚖️</div>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-2xl text-2xl group-hover:scale-110 transition-transform text-amber-500">⚖️</div>
                     </div>
                 </div>
                 <!-- Card 4: Class 3 -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 border-l-4 border-danger hover:shadow-md transition">
-                    <div class="flex justify-between items-center">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-claude-border dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300 group">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">ชั้น 3 (ต้องปรับปรุง)</p>
-                            <h3 class="text-3xl font-bold text-gray-800 dark:text-white" id="stat-c3">0</h3>
+                            <p class="text-claude-muted dark:text-gray-400 text-sm font-medium mb-1">ชั้น 3 (ต้องปรับปรุง)</p>
+                            <h3 class="text-4xl font-serif font-bold text-claude-text dark:text-white" id="stat-c3">0</h3>
                         </div>
-                        <div class="bg-danger/10 p-3 rounded-full text-danger text-xl">🚩</div>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-2xl text-2xl group-hover:scale-110 transition-transform text-rose-500">🚩</div>
                     </div>
                 </div>
             </div>
@@ -177,76 +180,71 @@
             </div>
 
             <!-- Action Bar -->
-            <div
-                class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-6 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-claude-border dark:border-gray-800 shadow-sm">
                 <!-- Filters -->
-                <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                <div class="flex flex-wrap gap-3 w-full lg:w-auto">
                     <select id="filter-sector"
-                        class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (กลุ่ม)</option>
                         <option value="agro">สหกรณ์ในภาคการเกษตร</option>
                         <option value="non-agro">สหกรณ์นอกภาคการเกษตร</option>
                         <option value="farmer_group">กลุ่มเกษตรกร</option>
                     </select>
                     <select id="filter-agency"
-                        class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (หน่วยงาน)</option>
                     </select>
                     <select id="filter-type"
-                        class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (ประเภท)</option>
                     </select>
                     <select id="filter-grade"
-                        class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (ระดับชั้น)</option>
                         <option value="ชั้น 1">ชั้น 1</option>
                         <option value="ชั้น 2">ชั้น 2</option>
                         <option value="ชั้น 3">ชั้น 3</option>
                     </select>
-                    <select id="filter-trend"
-                        class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option value="">ทั้งหมด (แนวโน้ม)</option>
-                        <option value="ดีขึ้น">🟢 ดีขึ้น</option>
-                        <option value="คงเดิม">🟡 คงเดิม</option>
-                        <option value="แย่ลง">🔴 แย่ลง</option>
-                    </select>
-                    <input type="text" id="search-box" placeholder="🔍 ค้นหาชื่อ/รหัส..."
-                        class="border rounded-lg px-3 py-2 text-sm w-full md:w-48 focus:ring-2 focus:ring-primary outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <div class="relative w-full md:w-64">
+                        <input type="text" id="search-box" placeholder="ค้นหาชื่อหรือรหัส..."
+                            class="border border-claude-border rounded-xl px-4 py-2.5 pl-10 text-sm w-full focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm">
+                        <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                    </div>
                 </div>
 
                 <!-- Buttons -->
-                <div class="flex gap-2">
+                <div class="flex gap-3 w-full md:w-auto">
                     <button onclick="openModal()"
-                        class="bg-primary hover:bg-teal-600 text-white px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                        class="flex-1 md:flex-none bg-claude-text dark:bg-white dark:text-black text-white px-6 py-2.5 rounded-xl shadow-sm transition-all hover:opacity-90 flex items-center justify-center gap-2 font-medium">
                         <span>➕ เพิ่มข้อมูล</span>
                     </button>
                     <input type="file" id="excel-file" accept=".xlsx, .xls" class="hidden"
                         onchange="handleExcelImport(this)">
                     <button onclick="document.getElementById('excel-file').click()"
-                        class="bg-secondary hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                        class="flex-1 md:flex-none border border-claude-border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-claude-text dark:text-white px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 font-medium">
                         <span>📥 Import Excel</span>
                     </button>
                 </div>
             </div>
 
             <!-- Data Table -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-claude-border dark:border-gray-800 overflow-hidden">
                 <div class="table-container">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-white uppercase bg-primary sticky top-0">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs font-bold text-claude-muted dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-800/50 border-b border-claude-border dark:border-gray-800 sticky top-0">
                             <tr>
-                                <th class="px-4 py-3">ที่</th>
-                                <th id="th-code" class="px-4 py-3 hidden">รหัส</th>
-                                <th class="px-4 py-3">ชื่อสหกรณ์</th>
-                                <th class="px-4 py-3">หน่วยงาน</th>
-                                <th class="px-4 py-3">ประเภท</th>
-                                <th class="px-4 py-3 text-center">คะแนนรวม</th>
-                                <th class="px-4 py-3 text-center">ผลการจัดชั้น</th>
-                                <th class="px-4 py-3 text-center">แนวโน้ม</th>
-                                <th class="px-4 py-3 text-center">Action</th>
+                                <th class="px-6 py-4">ที่</th>
+                                <th id="th-code" class="px-6 py-4 hidden">รหัส</th>
+                                <th class="px-6 py-4">ชื่อสหกรณ์</th>
+                                <th class="px-6 py-4">หน่วยงาน</th>
+                                <th class="px-6 py-4">ประเภท</th>
+                                <th class="px-6 py-4 text-center">คะแนนรวม</th>
+                                <th class="px-6 py-4 text-center">ผลการจัดชั้น</th>
+                                <th class="px-6 py-4 text-center">แนวโน้ม</th>
+                                <th class="px-6 py-4 text-center">จัดการ</th>
                             </tr>
                         </thead>
-                        <tbody id="table-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                        <tbody id="table-body" class="divide-y divide-claude-border dark:divide-gray-800 text-claude-text dark:text-gray-300">
                             <!-- Rows -->
                         </tbody>
                     </table>
@@ -345,7 +343,7 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
             <div
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
                 <form id="mainForm" onsubmit="handleFormSubmit(event)">
                     <input type="hidden" name="rowId" id="rowId">
 
@@ -535,7 +533,7 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
             <div
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
                 <div
                     class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
                     <div>
@@ -592,7 +590,7 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
             <div
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
                 <div class="bg-info px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
                     <div class="flex items-center gap-2">
                         <span class="text-white text-xl">ℹ️</span>
@@ -639,7 +637,7 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
             <div
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
                 <div
                     class="bg-yellow-500 px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
                     <div class="flex items-center gap-2">
