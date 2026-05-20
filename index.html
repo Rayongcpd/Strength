@@ -104,7 +104,7 @@
                         <span class="text-3xl cursor-pointer select-none" id="secret-login-trigger">🏛️</span>
                         <h1 class="text-3xl font-serif font-bold tracking-tight text-claude-text dark:text-white">ระบบรายงานความเข้มแข็งของสหกรณ์</h1>
                     </div>
-                    <p class="text-claude-muted dark:text-gray-400 font-medium">ประจำปีงบประมาณ 2568 • <span class="opacity-75">Cooperative Strengthening Report</span></p>
+                    <p class="text-claude-muted dark:text-gray-400 font-medium">ประจำปีงบประมาณ <span id="display-year">2568</span> • <span class="opacity-75">Cooperative Strengthening Report</span></p>
                 </div>
                 <div class="flex items-center gap-3 animate-fade-in-up" style="animation-delay: 0.2s">
                     <button id="theme-toggle" onclick="toggleDarkMode()"
@@ -196,6 +196,10 @@
             <div class="flex flex-col lg:flex-row justify-between items-center gap-6 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-claude-border dark:border-gray-800 shadow-sm">
                 <!-- Filters -->
                 <div class="flex flex-wrap gap-3 w-full lg:w-auto">
+                    <select id="filter-year"
+                        class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer font-bold text-accent dark:text-accent-light bg-accent/10 dark:bg-accent-light/10">
+                        <option value="2568">ปีงบประมาณ 2568</option>
+                    </select>
                     <select id="filter-sector"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (กลุ่ม)</option>
@@ -393,13 +397,20 @@
                                             class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                     </div>
                                     <div><label
-                                            class="block text-xs font-bold mb-1 dark:text-gray-300">หน่วยงาน</label><input
-                                            type="text" name="agency"
-                                            class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                            class="block text-xs font-bold mb-1 dark:text-gray-300">ปีงบประมาณ</label>
+                                        <select name="eval_year" id="form-eval-year" required
+                                            class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-bold text-accent dark:text-accent-light">
+                                            <option value="2568">2568</option>
+                                        </select>
                                     </div>
                                     <div><label
                                             class="block text-xs font-bold mb-1 dark:text-gray-300">ประเภท</label><input
                                             type="text" name="coop_type"
+                                            class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                    </div>
+                                    <div class="md:col-span-2"><label
+                                            class="block text-xs font-bold mb-1 dark:text-gray-300">หน่วยงาน</label><input
+                                            type="text" name="agency"
                                             class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                     </div>
                                 </div>
@@ -481,8 +492,7 @@
                             <div>
                                 <h4 class="text-primary font-bold mb-2 border-b">3. ข้อมูลประกอบ</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div><label class="block text-xs font-bold dark:text-gray-300">ผลการจัดชั้นปี
-                                            68</label>
+                                    <div><label id="label-grade" class="block text-xs font-bold dark:text-gray-300">ผลการจัดชั้นปี 2568</label>
                                         <select name="grade"
                                             class="w-full border rounded p-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                             <option value="">- เลือก -</option>
@@ -491,8 +501,7 @@
                                             <option value="ชั้น 3">ชั้น 3</option>
                                         </select>
                                     </div>
-                                    <div><label class="block text-xs font-bold dark:text-gray-300">ผลการจัดชั้นปี
-                                            67</label>
+                                    <div><label id="label-grade_67" class="block text-xs font-bold dark:text-gray-300">ผลการจัดชั้นปีก่อนหน้า (2567)</label>
                                         <select name="grade_67"
                                             class="w-full border rounded p-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                             <option value="">- เลือก -</option>
@@ -505,8 +514,7 @@
                                             (ปี)</label><input type="number" name="no_balance_years"
                                             class="w-full border rounded p-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                     </div>
-                                    <div><label class="block text-xs font-bold dark:text-gray-300">การประชุมใหญ่
-                                            68</label>
+                                    <div><label id="label-agm_68" class="block text-xs font-bold dark:text-gray-300">การประชุมใหญ่ปีปัจจุบัน (2568)</label>
                                         <select name="agm_68"
                                             class="w-full border rounded p-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                             <option value="ประชุมแล้ว">ประชุมแล้ว</option>

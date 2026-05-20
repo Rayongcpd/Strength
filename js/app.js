@@ -7,6 +7,8 @@ let importRawData = []; // Store Excel data here
 let isAdmin = false;
 let currentIndicatorConfig = null; // Will load from server
 let isDarkMode = false; // State for dark mode
+let selectedYear = "2568";
+let availableYears = ["2568"];
 
 // Criteria State
 let criteriaDataCoop = {}; // Store coop criteria { '1.1': 'html...', ... }
@@ -216,11 +218,32 @@ function fetchData() {
     google.script.run
         .withSuccessHandler(onDataSuccess)
         .withFailureHandler(onDataError)
-        .getData();
+        .getData(selectedYear);
+}
+
+function updateFormLabels(year) {
+    const yearNum = parseInt(year) || 2568;
+    const prevYearNum = yearNum - 1;
+    
+    const lblGrade = document.getElementById('label-grade');
+    if (lblGrade) lblGrade.textContent = `ผลการจัดชั้นปี ${yearNum}`;
+    
+    const lblGrade67 = document.getElementById('label-grade_67');
+    if (lblGrade67) lblGrade67.textContent = `ผลการจัดชั้นปีก่อนหน้า (${prevYearNum})`;
+    
+    const lblAgm68 = document.getElementById('label-agm_68');
+    if (lblAgm68) lblAgm68.textContent = `การประชุมใหญ่ปีปัจจุบัน (${yearNum})`;
 }
 
 function onDataSuccess(response) {
     rawData = response.data; // [{id, no, values:[]}]
+
+    if (response.availableYears) {
+        availableYears = response.availableYears;
+    }
+    if (response.selectedYear) {
+        selectedYear = response.selectedYear;
+    }
 
     // Update Coop Indicator Config if provided
     if (response.indicatorConfig) {
@@ -234,27 +257,69 @@ function onDataSuccess(response) {
     }
 
     // Map array values to easier object structure for frontend usage if needed, or index
-    // Mapping Indices based on Code.gs:
-    // 0:No (Ignored from value, use item.no), 1:Agency, 2:Name, 3:Code, 4:Type, 30:Total, 31:Grade, 41:Trend
+    // Mapping Indices based on Code.gs (shifted by 1 for Eval Year in col index 1):
+    // 0:No (Ignored from value, use item.no), 1:Year, 2:Agency, 3:Name, 4:Code, 5:Type, 31:Total, 32:Grade, 42:Trend
 
     dataList = rawData.map(item => {
         const v = item.values;
         return {
             id: item.id,
             no: item.no, // Use dynamic No from backend
-            agency: v[1],
-            name: v[2],
-            code: v[3],
-            type: v[4],
-            total: parseFloat(v[30]) || 0,
-            grade: v[31],
-            trend: v[41],
-            // Advice JSON at Index 42
-            advice: JSON.parse(v[42] || '{}'),
+            year: v[1],
+            agency: v[2],
+            name: v[3],
+            code: v[4],
+            type: v[5],
+            total: parseFloat(v[31]) || 0,
+            grade: v[32],
+            trend: v[42],
+            // Advice JSON at Index 43
+            advice: JSON.parse(v[43] || '{}'),
             // Store full row for editing
             fullRow: v
         };
     });
+
+    // Populate Year Filter Dropdown
+    const yearSelect = document.getElementById('filter-year');
+    if (yearSelect) {
+        yearSelect.innerHTML = '';
+        availableYears.forEach(yr => {
+            const opt = new Option('ปีงบประมาณ ' + yr, yr);
+            yearSelect.add(opt);
+        });
+        yearSelect.value = selectedYear;
+        
+        // Add change listener
+        yearSelect.onchange = function() {
+            selectedYear = this.value;
+            fetchData();
+        };
+    }
+    
+    // Update display-year header
+    const displayYearSpan = document.getElementById('display-year');
+    if (displayYearSpan) {
+        displayYearSpan.textContent = selectedYear;
+    }
+
+    // Populate Year Select in the Form
+    const formYearSelect = document.getElementById('form-eval-year');
+    if (formYearSelect) {
+        formYearSelect.innerHTML = '';
+        const formYears = [...availableYears];
+        const nextYear = String(parseInt(availableYears[0] || "2568") + 1);
+        if (!formYears.includes(nextYear)) {
+            formYears.unshift(nextYear);
+        }
+        formYears.forEach(yr => {
+            formYearSelect.add(new Option(yr, yr));
+        });
+        formYearSelect.value = selectedYear;
+    }
+
+    // Update form labels relative to selected year
+    updateFormLabels(selectedYear);
 
     populateFilters();
     renderTable();
@@ -586,21 +651,21 @@ function viewDetails(id) {
     document.getElementById('detail-subtitle').className = "text-sm text-claude-muted dark:text-gray-400 mt-1";
 
     const v = item.fullRow;
-    // Map values similarly to editData
+    // Map values similarly to editData (shifted by 1 due to Year column at index 1)
     const dataMap = {
         1: [
-            { key: 'd1_1', val: v[5] }, { key: 'd1_2', val: v[6] }, { key: 'd1_3', val: v[7] }
+            { key: 'd1_1', val: v[6] }, { key: 'd1_2', val: v[7] }, { key: 'd1_3', val: v[8] }
         ],
         2: [
-            { key: 'd2_1', val: v[9] }, { key: 'd2_2', val: v[10] }, { key: 'd2_3', val: v[11] },
-            { key: 'd2_4', val: v[12] }, { key: 'd2_5', val: v[13] }, { key: 'd2_6', val: v[14] }
+            { key: 'd2_1', val: v[10] }, { key: 'd2_2', val: v[11] }, { key: 'd2_3', val: v[12] },
+            { key: 'd2_4', val: v[13] }, { key: 'd2_5', val: v[14] }, { key: 'd2_6', val: v[15] }
         ],
         3: [
-            { key: 'd3_1', val: v[16] }, { key: 'd3_2', val: v[17] }, { key: 'd3_3', val: v[18] },
-            { key: 'd3_4', val: v[19] }, { key: 'd3_5', val: v[20] }
+            { key: 'd3_1', val: v[17] }, { key: 'd3_2', val: v[18] }, { key: 'd3_3', val: v[19] },
+            { key: 'd3_4', val: v[20] }, { key: 'd3_5', val: v[21] }
         ],
         4: [
-            { key: 'd4_1', val: v[23] }, { key: 'd4_2', val: v[24] }, { key: 'd4_3', val: v[25] }, { key: 'd4_4', val: v[26] }
+            { key: 'd4_1', val: v[24] }, { key: 'd4_2', val: v[25] }, { key: 'd4_3', val: v[26] }, { key: 'd4_4', val: v[27] }
         ]
     };
 
@@ -673,12 +738,12 @@ function viewDetails(id) {
         });
 
         // Add Summary Row for each dim
-        // Note: v indices for sums: D1(8), D2(15), D3(22), D4(27)
+        // Note: v indices for sums: D1(9), D2(16), D3(23), D4(28) (shifted by 1)
         let sum = 0;
-        if (dim === 1) sum = v[8];
-        if (dim === 2) sum = v[15];
-        if (dim === 3) sum = v[22];
-        if (dim === 4) sum = v[27];
+        if (dim === 1) sum = v[9];
+        if (dim === 2) sum = v[16];
+        if (dim === 3) sum = v[23];
+        if (dim === 4) sum = v[28];
         sum = parseFloat(sum) || 0;
 
         html += `
@@ -694,7 +759,8 @@ function viewDetails(id) {
     }
 
     // Special Case for Dim 3 Fail Text - render as proper indicator row like other indicators
-    const failText = v[21];
+    // v index shifted by 1: failText at index 22
+    const failText = v[22];
     if (failText) {
         const indicatorSet = getIndicatorInfo(item.name);
         const failInfo = indicatorSet['d3_fail'] || { code: 'ภาพรวม', desc: 'ภาพรวมไม่เข้าเกณฑ์' };
@@ -803,38 +869,38 @@ function editData(id) {
     const f = document.getElementById('mainForm');
     const v = item.fullRow;
 
-    // Map values back to inputs by index (Hardcoded mapping based on Code.gs processDataLogic columns)
-    // Warning: Array indices in Code.gs 'getData' are raw strings. We know the columns.
-    // Indices: 0:No, 1:Agency, 2:Name, 3:Code, 4:Type
-    // 5-7: d1.. 8:Sum1
-    // 9-14: d2.. 15:Sum2
-    // 16-20: d3.. 21:fail_text 22:Sum3
-    // 23-26: d4.. 27:Sum4
-    // 32: Remark
-    // 33: NoBalanceYears, 34: EvalYear, 35: AGM68, 36: Fin68 (Not in form), 37: Acc68 (Not in form)
-    // 38: Acc67 (Not in form), 39: ChangeNote, 40: Grade67 
+    // Map values back to inputs by index (shifted by 1 for multi-year)
+    // Indices: 0:No, 1:EvalYear, 2:Agency, 3:Name, 4:Code, 5:Type
+    // 6-8: d1.. 9:Sum1
+    // 10-15: d2.. 16:Sum2
+    // 17-21: d3.. 22:fail_text 23:Sum3
+    // 24-27: d4.. 28:Sum4
+    // 33: Remark
+    // 34: NoBalanceYears, 35: EvalYearRound (Sheet EvalYear, col index 35), 36: AGM68, 37: Fin68, 38: Acc68
+    // 39: Acc67, 40: ChangeNote, 41: Grade67 
 
     document.getElementById('rowId').value = id;
-    f.agency.value = v[1];
-    f.coop_name.value = v[2];
-    f.coop_code.value = v[3].replace("'", ""); // Remove escape char
-    f.coop_type.value = v[4];
+    f.eval_year.value = v[1] || selectedYear;
+    f.agency.value = v[2];
+    f.coop_name.value = v[3];
+    f.coop_code.value = v[4].replace("'", ""); // Remove escape char
+    f.coop_type.value = v[5];
 
-    f.d1_1.value = v[5]; f.d1_2.value = v[6]; f.d1_3.value = v[7];
+    f.d1_1.value = v[6]; f.d1_2.value = v[7]; f.d1_3.value = v[8];
 
-    f.d2_1.value = v[9]; f.d2_2.value = v[10]; f.d2_3.value = v[11];
-    f.d2_4.value = v[12]; f.d2_5.value = v[13]; f.d2_6.value = v[14];
+    f.d2_1.value = v[10]; f.d2_2.value = v[11]; f.d2_3.value = v[12];
+    f.d2_4.value = v[13]; f.d2_5.value = v[14]; f.d2_6.value = v[15];
 
-    f.d3_1.value = v[16]; f.d3_2.value = v[17]; f.d3_3.value = v[18];
-    f.d3_4.value = v[19]; f.d3_5.value = v[20]; f.d3_fail_text.value = v[21];
+    f.d3_1.value = v[17]; f.d3_2.value = v[18]; f.d3_3.value = v[19];
+    f.d3_4.value = v[20]; f.d3_5.value = v[21]; f.d3_fail_text.value = v[22];
 
-    f.d4_1.value = v[23]; f.d4_2.value = v[24]; f.d4_3.value = v[25]; f.d4_4.value = v[26];
+    f.d4_1.value = v[24]; f.d4_2.value = v[25]; f.d4_3.value = v[26]; f.d4_4.value = v[27];
 
-    f.remark.value = v[32] || ""; // Handle composite remark?
-    f.no_balance_years.value = v[33];
-    f.agm_68.value = v[35];
-    f.change_year_note.value = v[39];
-    f.grade_67.value = v[40];
+    f.remark.value = v[33] || ""; 
+    f.no_balance_years.value = v[34];
+    f.agm_68.value = v[36];
+    f.change_year_note.value = v[40];
+    f.grade_67.value = v[41];
 
     updateLiveScore();
 }
@@ -881,13 +947,15 @@ function handleFormSubmit(e) {
                 const newItem = {
                     id: parseInt(obj.rowId) || res.savedId, // If edit use existing ID, if add use new
                     no: (parseInt(obj.rowId) || res.savedId) - 1, // Dynamic No derived from Row ID (Row - 1)
-                    agency: newRowValues[1],
-                    name: newRowValues[2],
-                    code: newRowValues[3],
-                    type: newRowValues[4],
-                    total: parseFloat(newRowValues[30]) || 0,
-                    grade: newRowValues[31],
-                    trend: newRowValues[41],
+                    year: newRowValues[1],
+                    agency: newRowValues[2],
+                    name: newRowValues[3],
+                    code: newRowValues[4],
+                    type: newRowValues[5],
+                    total: parseFloat(newRowValues[31]) || 0,
+                    grade: newRowValues[32],
+                    trend: newRowValues[42],
+                    advice: JSON.parse(newRowValues[43] || '{}'),
                     fullRow: newRowValues
                 };
 
@@ -1072,6 +1140,7 @@ function confirmImport() {
         };
 
         return {
+            eval_year: selectedYear,
             agency: v(1),
             coop_name: v(2),
             coop_code: v(3),
