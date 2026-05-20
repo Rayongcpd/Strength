@@ -1062,6 +1062,19 @@ function handleExcelImport(input) {
 
 // --- Import Modal logic ---
 function openImportModal() {
+    // Populate import year dropdown dynamically based on availableYears
+    const importYearSelect = document.getElementById('import-eval-year');
+    if (importYearSelect) {
+        importYearSelect.innerHTML = '';
+        availableYears.forEach(yr => {
+            const opt = document.createElement('option');
+            opt.value = yr;
+            opt.innerText = `ปีงบประมาณ ${yr}`;
+            importYearSelect.appendChild(opt);
+        });
+        importYearSelect.value = selectedYear;
+    }
+
     document.getElementById('importModal').classList.remove('hidden');
     document.body.classList.add('overflow-hidden');
 }
@@ -1123,6 +1136,8 @@ function confirmImport() {
         return;
     }
 
+    const importYear = document.getElementById('import-eval-year').value || selectedYear;
+
     showLoader(true);
     closeImportModal();
 
@@ -1140,7 +1155,7 @@ function confirmImport() {
         };
 
         return {
-            eval_year: selectedYear,
+            eval_year: importYear,
             agency: v(1),
             coop_name: v(2),
             coop_code: v(3),

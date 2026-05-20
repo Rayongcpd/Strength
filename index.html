@@ -312,7 +312,7 @@
                                 ตัวอย่างข้อมูลนำเข้า
                                 (Preview)</h3>
 
-                            <div class="flex items-center gap-4 mb-4 bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                            <div class="flex flex-wrap items-center gap-4 mb-4 bg-gray-50 dark:bg-gray-700 p-3 rounded">
                                 <div>
                                     <label
                                         class="block text-xs font-bold text-gray-700 dark:text-gray-300">เริ่มนำเข้าจากแถวที่
@@ -322,10 +322,23 @@
                                         class="border rounded p-1 w-24 text-center dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                                         onchange="renderImportPreview()">
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 pt-4">
-                                    * กำหนดแถวเริ่มต้นของข้อมูลจริง (ข้าม Header)<br>
-                                    * จำนวนข้อมูลที่พบ: <span id="import-total-rows"
-                                        class="font-bold text-primary">0</span> รายการ
+                                
+                                <div class="border-l pl-4 border-gray-300 dark:border-gray-500">
+                                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                                        ปีงบประมาณที่จะนำเข้า:
+                                    </label>
+                                    <select id="import-eval-year"
+                                        class="border rounded p-1 w-36 text-center dark:bg-gray-600 dark:border-gray-500 dark:text-white font-bold text-accent">
+                                        <option value="2568">ปีงบประมาณ 2568</option>
+                                    </select>
+                                </div>
+
+                                <div class="border-l pl-4 border-gray-300 dark:border-gray-500">
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                                        * กำหนดแถวเริ่มต้นของข้อมูลจริง (ข้าม Header)<br>
+                                        * จำนวนข้อมูลที่พบ: <span id="import-total-rows"
+                                            class="font-bold text-primary">0</span> รายการ
+                                    </div>
                                 </div>
 
                                 <div class="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-500">
