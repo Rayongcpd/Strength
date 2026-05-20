@@ -193,13 +193,39 @@
             </div>
 
             <!-- Action Bar -->
-            <div class="flex flex-col lg:flex-row justify-between items-center gap-6 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-claude-border dark:border-gray-800 shadow-sm">
-                <!-- Filters -->
-                <div class="flex flex-wrap gap-3 w-full lg:w-auto">
+            <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-claude-border dark:border-gray-800 shadow-sm space-y-4">
+                <!-- Top Row: Search & Actions -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 dark:border-gray-800/50 pb-4">
+                    <!-- Search Box -->
+                    <div class="relative w-full md:w-96">
+                        <input type="text" id="search-box" placeholder="🔍 ค้นหาชื่อสหกรณ์ หรือรหัส 13 หลัก..."
+                            class="border border-claude-border rounded-xl px-4 py-2.5 pl-10 text-sm w-full focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm bg-gray-50/20 dark:bg-gray-950/20">
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="flex gap-3 w-full md:w-auto">
+                        <button onclick="openModal()"
+                            class="flex-1 md:flex-none bg-claude-text dark:bg-white dark:text-black text-white px-6 py-2.5 rounded-xl shadow-sm transition-all hover:opacity-90 flex items-center justify-center gap-2 font-medium">
+                            <span>➕ เพิ่มข้อมูล</span>
+                        </button>
+                        <input type="file" id="excel-file" accept=".xlsx, .xls" class="hidden"
+                            onchange="handleExcelImport(this)">
+                        <button onclick="document.getElementById('excel-file').click()"
+                            class="flex-1 md:flex-none border border-claude-border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-claude-text dark:text-white px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 font-medium">
+                            <span>📥 นำเข้า Excel</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Filters -->
+                <div class="flex flex-wrap items-center gap-3 w-full">
+                    <span class="text-xs font-bold text-claude-muted dark:text-gray-400 uppercase tracking-wider mr-1">ตัวกรอง:</span>
+                    
                     <select id="filter-year"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer font-bold text-accent dark:text-accent-light bg-accent/10 dark:bg-accent-light/10">
                         <option value="2568">ปีงบประมาณ 2568</option>
                     </select>
+                    
                     <select id="filter-sector"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (กลุ่ม)</option>
@@ -207,14 +233,17 @@
                         <option value="non-agro">สหกรณ์นอกภาคการเกษตร</option>
                         <option value="farmer_group">กลุ่มเกษตรกร</option>
                     </select>
+                    
                     <select id="filter-agency"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (หน่วยงาน)</option>
                     </select>
+                    
                     <select id="filter-type"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (ประเภท)</option>
                     </select>
+                    
                     <select id="filter-grade"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (ระดับชั้น)</option>
@@ -222,6 +251,7 @@
                         <option value="ชั้น 2">ชั้น 2</option>
                         <option value="ชั้น 3">ชั้น 3</option>
                     </select>
+                    
                     <select id="filter-trend"
                         class="border border-claude-border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none cursor-pointer">
                         <option value="">ทั้งหมด (แนวโน้ม)</option>
@@ -229,25 +259,6 @@
                         <option value="คงเดิม">คงเดิม</option>
                         <option value="แย่ลง">แย่ลง</option>
                     </select>
-                    <div class="relative w-full md:w-64">
-                        <input type="text" id="search-box" placeholder="ค้นหาชื่อหรือรหัส..."
-                            class="border border-claude-border rounded-xl px-4 py-2.5 pl-10 text-sm w-full focus:ring-2 focus:ring-accent outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 select-none">🔍</span>
-                    </div>
-                </div>
-
-                <!-- Buttons -->
-                <div class="flex gap-3 w-full md:w-auto">
-                    <button onclick="openModal()"
-                        class="flex-1 md:flex-none bg-claude-text dark:bg-white dark:text-black text-white px-6 py-2.5 rounded-xl shadow-sm transition-all hover:opacity-90 flex items-center justify-center gap-2 font-medium">
-                        <span>➕ เพิ่มข้อมูล</span>
-                    </button>
-                    <input type="file" id="excel-file" accept=".xlsx, .xls" class="hidden"
-                        onchange="handleExcelImport(this)">
-                    <button onclick="document.getElementById('excel-file').click()"
-                        class="flex-1 md:flex-none border border-claude-border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-claude-text dark:text-white px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 font-medium">
-                        <span>📥 Import Excel</span>
-                    </button>
                 </div>
             </div>
 
