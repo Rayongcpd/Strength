@@ -493,7 +493,7 @@ function updateCharts(data) {
                         color: textColor,
                         boxWidth: 12,
                         padding: 15,
-                        font: { family: 'Inter, Kanit, sans-serif', size: 11 }
+                        font: { family: 'Inter, Noto Sans Thai, sans-serif', size: 11 }
                     }
                 }
             },
@@ -532,14 +532,14 @@ function updateCharts(data) {
                     beginAtZero: true,
                     ticks: { 
                         color: textColor,
-                        font: { family: 'Inter, Kanit, sans-serif', size: 10 }
+                        font: { family: 'Inter, Noto Sans Thai, sans-serif', size: 10 }
                     },
                     grid: { color: gridColor }
                 },
                 x: {
                     ticks: { 
                         color: textColor,
-                        font: { family: 'Inter, Kanit, sans-serif', size: 11 }
+                        font: { family: 'Inter, Noto Sans Thai, sans-serif', size: 11 }
                     },
                     grid: { display: false }
                 }
