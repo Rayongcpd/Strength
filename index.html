@@ -26,24 +26,36 @@
                         serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        primary: '#1A1A1A',
-                        accent: '#D97757',
-                        claude: {
-                            bg: '#F9F9F8',
-                            surface: '#FFFFFF',
-                            border: '#E5E5E5',
-                            text: '#1A1A1A',
-                            muted: '#666666'
+                        primary: '#191919',
+                        accent: {
+                            DEFAULT: '#C95D3B', // Rich Claude terracotta
+                            hover: '#B24F31',
+                            light: '#F7ECE9'
                         },
-                        secondary: '#666666',
-                        danger: '#E05252',
-                        info: '#4B6BFB',
-                        warn: '#F2C94C',
+                        claude: {
+                            bg: '#FBFBF9',
+                            surface: '#FFFFFF',
+                            border: '#E5E2DD',
+                            text: '#191919',
+                            muted: '#7E7970',
+                            
+                            // Dark Theme colors
+                            darkBg: '#1B1A18',
+                            darkSurface: '#242321',
+                            darkBorder: '#3A3835',
+                            darkText: '#EAE8E4',
+                            darkMuted: '#9B978E'
+                        },
+                        secondary: '#7E7970',
+                        danger: '#DE8A8A', // Muted Clay Rose
+                        info: '#859F84', // Sage Green
+                        warn: '#E2B383', // Warm Amber
                     }
                 }
             }
         }
     </script>
+
 
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -235,10 +247,10 @@
             </div>
 
             <!-- Data Table -->
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-claude-border dark:border-gray-800 overflow-hidden">
+            <div class="bg-claude-surface dark:bg-claude-darkSurface rounded-2xl border border-claude-border dark:border-claude-darkBorder overflow-hidden">
                 <div class="table-container">
                     <table class="w-full text-sm text-left">
-                        <thead class="text-xs font-bold text-claude-muted dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-800/50 border-b border-claude-border dark:border-gray-800 sticky top-0">
+                        <thead class="text-xs font-bold text-claude-muted dark:text-claude-darkMuted uppercase bg-claude-bg dark:bg-claude-darkBg border-b border-claude-border dark:border-claude-darkBorder sticky top-0">
                             <tr>
                                 <th class="px-6 py-4">ที่</th>
                                 <th id="th-code" class="px-6 py-4 hidden">รหัส</th>
@@ -276,8 +288,8 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
             <div
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">📂
@@ -331,11 +343,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div class="border-t border-claude-border dark:border-claude-darkBorder px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" onclick="confirmImport()"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-claude-accent text-base font-medium text-white hover:opacity-90 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">ยืนยันการนำเข้า</button>
+                        class="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-accent hover:bg-accent-hover text-base font-semibold text-white transition sm:ml-3 sm:w-auto sm:text-sm">ยืนยันการนำเข้า</button>
                     <button type="button" onclick="closeImportModal()"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ยกเลิก</button>
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-claude-border dark:border-claude-darkBorder px-4 py-2 bg-claude-surface dark:bg-claude-darkSurface text-base font-semibold text-claude-text dark:text-claude-darkText hover:bg-gray-50 dark:hover:bg-claude-darkBorder/40 transition sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">ยกเลิก</button>
                 </div>
             </div>
         </div>
@@ -355,11 +367,11 @@
                     <input type="hidden" name="rowId" id="rowId">
 
                     <div
-                        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">📝
+                        class="px-4 py-4 sm:px-6 flex justify-between items-center border-b border-claude-border dark:border-claude-darkBorder">
+                        <h3 class="text-lg leading-6 font-bold font-serif text-claude-text dark:text-claude-darkText" id="modal-title">
                             บันทึกข้อมูล</h3>
                         <button type="button" onclick="closeModal()"
-                            class="text-gray-400 hover:text-gray-500 text-2xl">&times;</button>
+                            class="text-claude-muted hover:text-claude-text dark:text-claude-darkMuted dark:hover:text-claude-darkText transition text-2xl">&times;</button>
                     </div>
 
                     <div class="px-4 py-5 sm:p-6 max-h-[70vh] overflow-y-auto">
@@ -516,11 +528,11 @@
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <div class="border-t border-claude-border dark:border-claude-darkBorder px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse bg-transparent">
                         <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-claude-accent text-base font-medium text-white hover:opacity-90 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">บันทึก</button>
+                            class="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-accent hover:bg-accent-hover text-base font-semibold text-white transition sm:ml-3 sm:w-auto sm:text-sm">บันทึก</button>
                         <button type="button" onclick="closeModal()"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ยกเลิก</button>
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-claude-border dark:border-claude-darkBorder px-4 py-2 bg-claude-surface dark:bg-claude-darkSurface text-base font-semibold text-claude-text dark:text-claude-darkText hover:bg-gray-50 dark:hover:bg-claude-darkBorder/40 transition sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">ยกเลิก</button>
                     </div>
                 </form>
             </div>
@@ -538,14 +550,14 @@
             <div
                 class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
                 <div
-                    class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
+                    class="px-4 py-4 sm:px-6 flex justify-between items-center border-b border-claude-border dark:border-claude-darkBorder">
                     <div>
-                        <h3 class="text-lg leading-6 font-bold text-gray-900 dark:text-white" id="detail-title">
+                        <h3 class="text-lg leading-6 font-bold font-serif text-claude-text dark:text-claude-darkText" id="detail-title">
                             รายละเอียดคะแนน</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400" id="detail-subtitle">-</p>
+                        <p class="text-xs text-claude-muted dark:text-claude-darkMuted mt-0.5" id="detail-subtitle">-</p>
                     </div>
                     <button type="button" onclick="closeDetailModal()"
-                        class="text-gray-400 hover:text-gray-500 text-2xl">&times;</button>
+                        class="text-claude-muted hover:text-claude-text dark:text-claude-darkMuted dark:hover:text-claude-darkText transition text-2xl">&times;</button>
                 </div>
 
                 <div class="px-4 py-5 sm:p-6 max-h-[70vh] overflow-y-auto">
@@ -575,10 +587,10 @@
 
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-2"
+                <div class="border-t border-claude-border dark:border-claude-darkBorder px-4 py-3 sm:px-6 flex justify-end gap-2"
                     id="detail-modal-footer">
                     <button type="button" onclick="closeDetailModal()"
-                        class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ปิด</button>
+                        class="w-full sm:w-auto inline-flex justify-center rounded-md border border-claude-border dark:border-claude-darkBorder px-4 py-2 bg-claude-surface dark:bg-claude-darkSurface text-base font-semibold text-claude-text dark:text-claude-darkText hover:bg-gray-50 dark:hover:bg-claude-darkBorder/40 transition sm:text-sm">ปิด</button>
                 </div>
             </div>
         </div>
@@ -594,14 +606,13 @@
 
             <div
                 class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-                <div class="bg-info px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
+                <div class="px-4 py-4 sm:px-6 flex justify-between items-center border-b border-claude-border dark:border-claude-darkBorder">
                     <div class="flex items-center gap-2">
-                        <span class="text-white text-xl">ℹ️</span>
-                        <h3 class="text-lg leading-6 font-bold text-white" id="criteria-modal-title">
+                        <h3 class="text-lg leading-6 font-bold font-serif text-claude-text dark:text-claude-darkText" id="criteria-modal-title">
                             รายละเอียดเกณฑ์ตัวชี้วัด</h3>
                     </div>
                     <button type="button" onclick="closeCriteriaModal()"
-                        class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                        class="text-claude-muted hover:text-claude-text dark:text-claude-darkMuted dark:hover:text-claude-darkText transition text-2xl">&times;</button>
                 </div>
 
                 <div class="px-4 py-5 sm:p-6 max-h-[70vh] overflow-y-auto">
@@ -619,13 +630,13 @@
                     </div>
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-2"
+                <div class="border-t border-claude-border dark:border-claude-darkBorder px-4 py-3 sm:px-6 flex justify-end gap-2"
                     id="criteria-modal-footer">
                     <button type="button" id="criteria-edit-btn" onclick="openCriteriaEditor()"
-                        class="hidden inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-white font-medium hover:bg-yellow-600 focus:outline-none sm:text-sm">✏️
-                        แก้ไข</button>
+                        class="hidden inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-accent hover:bg-accent-hover text-white font-semibold transition sm:text-sm">
+                        แก้ไขเกณฑ์</button>
                     <button type="button" onclick="closeCriteriaModal()"
-                        class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ปิด</button>
+                        class="inline-flex justify-center rounded-md border border-claude-border dark:border-claude-darkBorder px-4 py-2 bg-claude-surface dark:bg-claude-darkSurface font-semibold text-claude-text dark:text-claude-darkText hover:bg-gray-50 dark:hover:bg-claude-darkBorder/40 transition sm:text-sm">ปิด</button>
                 </div>
             </div>
         </div>
@@ -642,14 +653,13 @@
             <div
                 class="premium-modal inline-block align-bottom rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
                 <div
-                    class="bg-yellow-500 px-4 py-3 sm:px-6 flex justify-between items-center border-b dark:border-gray-600">
+                    class="px-4 py-4 sm:px-6 flex justify-between items-center border-b border-claude-border dark:border-claude-darkBorder">
                     <div class="flex items-center gap-2">
-                        <span class="text-white text-xl">✏️</span>
-                        <h3 class="text-lg leading-6 font-bold text-white" id="criteria-editor-title">
+                        <h3 class="text-lg leading-6 font-bold font-serif text-claude-text dark:text-claude-darkText" id="criteria-editor-title">
                             แก้ไขเกณฑ์ตัวชี้วัด</h3>
                     </div>
                     <button type="button" onclick="closeCriteriaEditor()"
-                        class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                        class="text-claude-muted hover:text-claude-text dark:text-claude-darkMuted dark:hover:text-claude-darkText transition text-2xl">&times;</button>
                 </div>
 
                 <div class="px-4 py-5 sm:p-6">
@@ -671,12 +681,11 @@
                         style="height: 300px;"></div>
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-2">
+                <div class="border-t border-claude-border dark:border-claude-darkBorder px-4 py-3 sm:px-6 flex justify-end gap-2">
                     <button type="button" onclick="saveCriteriaContent()"
-                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none sm:text-sm">💾
-                        บันทึก</button>
+                        class="inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-accent hover:bg-accent-hover text-white font-semibold transition sm:text-sm">บันทึก</button>
                     <button type="button" onclick="closeCriteriaEditor()"
-                        class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500">ยกเลิก</button>
+                        class="inline-flex justify-center rounded-md border border-claude-border dark:border-claude-darkBorder px-4 py-2 bg-claude-surface dark:bg-claude-darkSurface font-semibold text-claude-text dark:text-claude-darkText hover:bg-gray-50 dark:hover:bg-claude-darkBorder/40 transition sm:text-sm">ยกเลิก</button>
                 </div>
             </div>
         </div>

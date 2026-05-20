@@ -360,47 +360,72 @@ function renderTable() {
 
     displayData.forEach((d, index) => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition border-b dark:border-gray-700';
+        tr.className = 'hover:bg-accent-light/10 dark:hover:bg-claude-darkBorder/20 transition border-b border-claude-border dark:border-claude-darkBorder';
 
         // Color badge for grade (normalize for both "ชั้น 1" and "ชั้น1")
-        let gradeBadge = 'bg-gray-100 text-gray-500';
-        if (d.grade && d.grade.includes('1')) gradeBadge = 'bg-claude-accent text-white';
-        if (d.grade && d.grade.includes('2')) gradeBadge = 'bg-amber-100 text-amber-700 border border-amber-200';
-        if (d.grade && d.grade.includes('3')) gradeBadge = 'bg-rose-50 text-rose-600 border border-rose-100';
+        let gradeBadge = 'bg-gray-50 text-gray-600 border border-gray-200 dark:bg-gray-900/40 dark:text-gray-300 dark:border-gray-800';
+        if (d.grade && d.grade.includes('1')) {
+            gradeBadge = 'bg-emerald-50 text-emerald-800 border border-emerald-200/50 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-800/40';
+        } else if (d.grade && d.grade.includes('2')) {
+            gradeBadge = 'bg-amber-50 text-amber-800 border border-amber-200/50 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/40';
+        } else if (d.grade && d.grade.includes('3')) {
+            gradeBadge = 'bg-rose-50 text-rose-800 border border-rose-200/50 dark:bg-rose-950/30 dark:text-rose-300 dark:border-rose-800/40';
+        }
 
-        // Trend Icon (🟢 ดีขึ้น, 🟡 คงเดิม, 🔴 แย่ลง)
-        let trendIcon = '<div class="flex flex-col items-center"><span class="text-lg">🟡</span><span class="text-claude-muted dark:text-gray-400 text-[10px] font-medium">คงเดิม</span></div>';
-        if (d.trend === 'ดีขึ้น') trendIcon = '<div class="flex flex-col items-center"><span class="text-lg">🟢</span><span class="text-green-600 dark:text-green-400 text-[10px] font-medium">ดีขึ้น</span></div>';
-        if (d.trend === 'แย่ลง') trendIcon = '<div class="flex flex-col items-center"><span class="text-lg">🔴</span><span class="text-rose-600 dark:text-rose-400 text-[10px] font-medium">แย่ลง</span></div>';
+        // Trend Icon (Elegant Badges with direction arrow)
+        let trendIcon = `
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-gray-50 text-gray-500 border border-gray-200/50 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-800/40">
+                <span class="text-xs">→</span><span>คงเดิม</span>
+            </div>
+        `;
+        if (d.trend === 'ดีขึ้น') {
+            trendIcon = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/40 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-800/40">
+                    <span class="text-xs">↑</span><span>ดีขึ้น</span>
+                </div>
+            `;
+        } else if (d.trend === 'แย่ลง') {
+            trendIcon = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/40 dark:bg-rose-950/30 dark:text-rose-300 dark:border-rose-800/40">
+                    <span class="text-xs">↓</span><span>แย่ลง</span>
+                </div>
+            `;
+        }
 
         let actionHtml = `
-             <button onclick="viewDetails(${d.id})" class="action-btn text-claude-muted dark:text-gray-400 hover:text-claude-text dark:hover:text-white p-1.5 rounded-lg transition" title="ดูรายละเอียด">📄</button>
+             <button onclick="viewDetails(${d.id})" class="action-btn text-claude-muted dark:text-claude-darkMuted hover:text-accent dark:hover:text-accent-light p-1.5 rounded-md hover:bg-accent-light/30 dark:hover:bg-claude-darkBorder/40 transition" title="ดูรายละเอียด">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+             </button>
         `;
 
         if (isAdmin) {
             actionHtml += `
-                 <button onclick="editData(${d.id})" class="action-btn text-blue-500 hover:bg-blue-50 p-1.5 rounded-lg transition">✏️</button>
-                 <button onclick="deleteData(${d.id})" class="action-btn text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition">🗑️</button>
+                 <button onclick="editData(${d.id})" class="action-btn text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 p-1.5 rounded-md hover:bg-amber-50 dark:hover:bg-amber-950/30 transition" title="แก้ไข">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                 </button>
+                 <button onclick="deleteData(${d.id})" class="action-btn text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-200 p-1.5 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/30 transition" title="ลบ">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                 </button>
             `;
         }
 
         // Conditionally render Code Cell
         let codeCell = '';
         if (isAdmin) {
-            codeCell = `<td class="px-4 py-3 text-gray-500">${d.code}</td>`;
+            codeCell = `<td class="px-4 py-3 text-sm text-claude-muted dark:text-claude-darkMuted font-mono">${d.code}</td>`;
         }
 
         tr.innerHTML = `
-            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${index + 1}</td>
+            <td class="px-4 py-3 text-sm font-medium text-claude-text dark:text-claude-darkText">${index + 1}</td>
             ${codeCell}
-            <td class="px-6 py-4 font-semibold text-claude-text dark:text-white">${d.name}</td>
-            <td class="px-6 py-4 text-claude-muted dark:text-gray-400 text-xs font-medium">${d.agency}</td>
-            <td class="px-6 py-4 text-claude-muted dark:text-gray-400 text-xs font-medium">${d.type}</td>
-            <td class="px-6 py-4 text-center font-bold text-lg text-claude-text dark:text-white">${d.total.toFixed(2)}</td>
+            <td class="px-6 py-4 font-semibold text-sm text-claude-text dark:text-claude-darkText">${d.name}</td>
+            <td class="px-6 py-4 text-claude-muted dark:text-claude-darkMuted text-xs font-medium">${d.agency}</td>
+            <td class="px-6 py-4 text-claude-muted dark:text-claude-darkMuted text-xs font-medium">${d.type}</td>
+            <td class="px-6 py-4 text-center font-bold text-base text-claude-text dark:text-claude-darkText">${d.total.toFixed(2)}</td>
             <td class="px-6 py-4 text-center"><span class="badge-grade ${gradeBadge}">${d.grade}</span></td>
             <td class="px-6 py-4 text-center">${trendIcon}</td>
-            <td class="px-6 py-4">
-                <div class="flex items-center justify-center gap-1">
+            <td class="px-6 py-4 text-center">
+                <div class="flex items-center justify-center gap-1.5">
                     ${actionHtml}
                 </div>
             </td>
@@ -442,8 +467,10 @@ function updateCharts(data) {
     const ctxClass = document.getElementById('chartClass').getContext('2d');
     if (chartClassInstance) chartClassInstance.destroy();
 
-    // Determine Text Color
-    const textColor = isDarkMode ? '#e5e7eb' : '#374151';
+    // Determine Design colors based on theme
+    const textColor = isDarkMode ? '#9B978E' : '#7E7970'; // Claude muted colors
+    const gridColor = isDarkMode ? '#3A3835' : '#E5E2DD';  // Claude border colors
+    const surfaceBorderColor = isDarkMode ? '#242321' : '#ffffff';
 
     chartClassInstance = new Chart(ctxClass, {
         type: 'doughnut',
@@ -451,8 +478,8 @@ function updateCharts(data) {
             labels: ['ชั้น 1', 'ชั้น 2', 'ชั้น 3'],
             datasets: [{
                 data: [counts['ชั้น 1'], counts['ชั้น 2'], counts['ชั้น 3']],
-                backgroundColor: ['#8BA888', '#D4A373', '#C87D7D'],
-                borderColor: isDarkMode ? '#0a0a0a' : '#ffffff',
+                backgroundColor: ['#859F84', '#E2B383', '#DE8A8A'], // Claude Sage, Amber, Rose
+                borderColor: surfaceBorderColor,
                 borderWidth: 2
             }]
         },
@@ -461,9 +488,16 @@ function updateCharts(data) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    labels: { color: textColor }
+                    position: 'bottom',
+                    labels: {
+                        color: textColor,
+                        boxWidth: 12,
+                        padding: 15,
+                        font: { family: 'Inter, Kanit, sans-serif', size: 11 }
+                    }
                 }
-            }
+            },
+            cutout: '72%'
         }
     });
 
@@ -473,6 +507,11 @@ function updateCharts(data) {
 
     const ctxTrend = document.getElementById('chartTrend').getContext('2d');
     if (chartTrendInstance) chartTrendInstance.destroy();
+
+    const trendBgColor = isDarkMode 
+        ? ['#859F84', '#3A3835', '#DE8A8A'] 
+        : ['#859F84', '#E2E0D9', '#DE8A8A'];
+
     chartTrendInstance = new Chart(ctxTrend, {
         type: 'bar',
         data: {
@@ -480,8 +519,9 @@ function updateCharts(data) {
             datasets: [{
                 label: 'จำนวนสหกรณ์',
                 data: [trends['ดีขึ้น'], trends['คงเดิม'], trends['แย่ลง']],
-                backgroundColor: ['#8BA888', '#D9D9D9', '#C87D7D'],
-                borderRadius: 8
+                backgroundColor: trendBgColor,
+                borderRadius: 6,
+                barThickness: 32
             }]
         },
         options: {
@@ -490,17 +530,23 @@ function updateCharts(data) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { color: textColor },
-                    grid: { color: isDarkMode ? '#374151' : '#e5e7eb' }
+                    ticks: { 
+                        color: textColor,
+                        font: { family: 'Inter, Kanit, sans-serif', size: 10 }
+                    },
+                    grid: { color: gridColor }
                 },
                 x: {
-                    ticks: { color: textColor },
+                    ticks: { 
+                        color: textColor,
+                        font: { family: 'Inter, Kanit, sans-serif', size: 11 }
+                    },
                     grid: { display: false }
                 }
             },
             plugins: {
                 legend: {
-                    labels: { color: textColor }
+                    display: false
                 }
             }
         }

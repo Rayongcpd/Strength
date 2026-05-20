@@ -1,7 +1,7 @@
 body {
     font-family: 'Inter', 'Kanit', sans-serif;
-    background-color: #F9F9F8;
-    color: #1A1A1A;
+    background-color: #FBFBF9;
+    color: #191919;
     letter-spacing: -0.01em;
     line-height: 1.6;
 }
@@ -17,22 +17,22 @@ h1, h2, h3, h4, .font-serif {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(249, 249, 248, 0.8);
+    background: rgba(251, 251, 249, 0.85);
     z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
 }
 
 /* Dark Mode Overlay */
 html.dark .loading-overlay {
-    background: rgba(10, 10, 10, 0.85);
+    background: rgba(27, 26, 24, 0.9);
 }
 
 .spinner {
-    border: 3px solid #E5E5E5;
-    border-top: 3px solid #1A1A1A;
+    border: 3px solid #E5E2DD;
+    border-top: 3px solid #C95D3B;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -41,8 +41,8 @@ html.dark .loading-overlay {
 
 /* Dark Mode Spinner */
 html.dark .spinner {
-    border-color: #333;
-    border-top-color: #FFF;
+    border-color: #3A3835;
+    border-top-color: #D97757;
 }
 
 @keyframes spin {
@@ -72,19 +72,19 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: rgba(201, 93, 59, 0.02); /* Terracotta tint */
     transform: translateY(-1px);
 }
 
 html.dark tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(217, 119, 87, 0.03);
 }
 
 /* Animations */
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(12px);
     }
     to {
         opacity: 1;
@@ -93,70 +93,76 @@ html.dark tbody tr:hover {
 }
 
 .animate-fade-in-up {
-    animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Glassmorphism */
+/* Glassmorphism (Claude Solid/Semi-trans Header) */
 .glass-header {
-    background: rgba(249, 249, 248, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(251, 251, 249, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     position: sticky;
     top: 0;
     z-index: 40;
 }
 
 html.dark .glass-header {
-    background: rgba(10, 10, 10, 0.8);
+    background: rgba(27, 26, 24, 0.95);
 }
 
-/* Modal Premium Look */
+/* Modal Premium Look (Claude Matte White/Dark surface with fine borders) */
 .premium-modal {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: #FFFFFF;
+    border: 1px solid #E5E2DD;
+    box-shadow: 0 10px 30px -10px rgba(25, 25, 25, 0.08);
 }
 
 html.dark .premium-modal {
-    background: rgba(20, 20, 20, 0.95);
-    border-color: rgba(255, 255, 255, 0.05);
+    background: #242321;
+    border-color: #3A3835;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
 }
 
-/* Badge Refinement */
+/* Badge Refinement (Claude Minimalist styling) */
 .badge-grade {
     padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    border-radius: 6px; /* Less round, more premium card feel */
+    font-size: 0.725rem;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 60px;
-    line-height: 1;
+    min-width: 64px;
+    line-height: 1.2;
 }
 
 /* Action Button Polish */
 .action-btn {
-    transition: all 0.2s ease;
-    opacity: 0.7;
+    transition: all 0.15s ease;
+    opacity: 0.8;
 }
 
 .action-btn:hover {
     opacity: 1;
-    transform: scale(1.1);
+    transform: translateY(-1px);
 }
 
 /* Criteria Content Styles (Refined) */
 .criteria-content {
     line-height: 1.8;
-    font-size: 1.05rem;
+    font-size: 1rem;
+    color: #191919;
+}
+
+html.dark .criteria-content {
+    color: #EAE8E4;
 }
 
 .criteria-content h1,
 .criteria-content h2,
 .criteria-content h3 {
     font-family: 'Playfair Display', serif;
-    color: #1A1A1A;
+    color: #191919;
     margin-top: 2rem;
     margin-bottom: 1rem;
     font-weight: 700;
@@ -165,57 +171,57 @@ html.dark .premium-modal {
 html.dark .criteria-content h1,
 html.dark .criteria-content h2,
 html.dark .criteria-content h3 {
-    color: #FFFFFF;
+    color: #EAE8E4;
 }
 
 .criteria-content p {
     margin-bottom: 1.25rem;
-    color: #444;
+    color: #5D5950;
 }
 
 html.dark .criteria-content p {
-    color: #CCC;
+    color: #9B978E;
 }
 
 .criteria-content table {
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #E5E5E5;
+    border: 1px solid #E5E2DD;
 }
 
 .criteria-content th {
-    background-color: #F3F4F6;
-    color: #1A1A1A;
+    background-color: #F7F5F0;
+    color: #191919;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.75rem;
+    font-size: 0.725rem;
     letter-spacing: 0.05em;
 }
 
 html.dark .criteria-content table {
-    border-color: #333;
+    border-color: #3A3835;
 }
 
 html.dark .criteria-content th {
-    background-color: #1F2937;
-    color: #EEE;
+    background-color: #2D2C2A;
+    color: #EAE8E4;
 }
 
 /* Input Styles */
 input, select, textarea {
-    transition: all 0.2s;
+    transition: all 0.15s ease-in-out;
 }
 
 input:focus, select:focus {
-    border-color: #D97757 !important;
-    box-shadow: 0 0 0 4px rgba(217, 119, 87, 0.1) !important;
+    border-color: #C95D3B !important;
+    box-shadow: 0 0 0 3px rgba(201, 93, 59, 0.12) !important;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -223,30 +229,105 @@ input:focus, select:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #E5E5E5;
-    border-radius: 10px;
+    background: #E5E2DD;
+    border-radius: 3px;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-    background: #333;
+    background: #3A3835;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #CCC;
+    background: #7E7970;
 }
 
 /* Form Sections */
 .form-section-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #E5E5E5;
-    margin-bottom: 1.5rem;
-    color: #1A1A1A;
+    border-bottom: 1px solid #E5E2DD;
+    margin-bottom: 1.25rem;
+    color: #191919;
 }
 
 html.dark .form-section-title {
-    border-color: #333;
-    color: #FFF;
-}
+    border-color: #3A3835;
+    color: #EAE8E4;
+}
+
+/* SweetAlert2 Claude Styling */
+.swal2-popup {
+    background: #FFFFFF !important;
+    border: 1px solid #E5E2DD !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 20px 40px -15px rgba(25, 25, 25, 0.1) !important;
+    color: #191919 !important;
+    font-family: 'Inter', 'Kanit', sans-serif !important;
+}
+
+html.dark .swal2-popup {
+    background: #242321 !important;
+    border-color: #3A3835 !important;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4) !important;
+    color: #EAE8E4 !important;
+}
+
+.swal2-title {
+    font-family: 'Playfair Display', 'Kanit', serif !important;
+    font-weight: 700 !important;
+    color: #191919 !important;
+}
+
+html.dark .swal2-title {
+    color: #EAE8E4 !important;
+}
+
+.swal2-html-container {
+    color: #5D5950 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+}
+
+html.dark .swal2-html-container {
+    color: #9B978E !important;
+}
+
+.swal2-confirm.swal2-styled {
+    background-color: #C95D3B !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    padding: 0.625rem 1.25rem !important;
+    transition: all 0.15s ease !important;
+}
+
+.swal2-confirm.swal2-styled:hover {
+    background-color: #B54F30 !important;
+}
+
+.swal2-cancel.swal2-styled {
+    background-color: transparent !important;
+    border: 1px solid #E5E2DD !important;
+    color: #5D5950 !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    padding: 0.625rem 1.25rem !important;
+    transition: all 0.15s ease !important;
+}
+
+html.dark .swal2-cancel.swal2-styled {
+    border-color: #3A3835 !important;
+    color: #9B978E !important;
+}
+
+.swal2-cancel.swal2-styled:hover {
+    background-color: #F7F5F0 !important;
+}
+
+html.dark .swal2-cancel.swal2-styled:hover {
+    background-color: rgba(58, 56, 53, 0.4) !important;
+}
+
